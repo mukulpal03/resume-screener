@@ -1,0 +1,23 @@
+{
+  "name": "@repo/api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node src/server.ts"
+  },
+  "dependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.15.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
