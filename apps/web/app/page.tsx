@@ -1,5 +1,6 @@
 import Image, { type ImageProps } from 'next/image';
-import { Button } from '@repo/ui/button';
+import { Button, TestButton } from '@repo/ui';
+
 import styles from './page.module.css';
 
 type Props = Omit<ImageProps, 'src'> & {
@@ -84,6 +85,9 @@ export default function Home() {
           <Image aria-hidden src="/globe.svg" alt="Globe icon" width={16} height={16} />
           Go to turborepo.dev →
         </a>
+        <div className="p-10">
+          <TestButton />
+        </div>
       </footer>
     </div>
   );
