@@ -1,9 +1,10 @@
-import { Button } from '@repo/ui';
+import { Navbar } from '@repo/ui';
 
 export default function Page() {
   return (
-    <div className="p-10 bg-">
-      <Button>Shadcn Button </Button>
-    </div>
+    <>
+      <Navbar />
+      {/* <div className="p-10">Hello</div> */}
+    </>
   );
 }

@@ -5,3 +5,4 @@ export * from './components/ui/button';
 export * from './components/testbutton';
 export * from './components/card';
 export * from './components/code';
+export { default as Navbar } from './components/layout/navbar';
