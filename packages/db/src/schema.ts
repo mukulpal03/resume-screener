@@ -1,7 +1,10 @@
-import { integer, pgTable, varchar } from 'drizzle-orm/pg-core';
+import { integer, pgTable, timestamp, varchar } from 'drizzle-orm/pg-core';
 
 export const usersTable = pgTable('users', {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar().notNull(),
   email: varchar().notNull().unique(),
+  firstName: varchar().notNull(),
+  lastName: varchar().notNull(),
+  clerkId: varchar().notNull().unique(),
+  createdAt: timestamp('created_at').defaultNow(),
 });
