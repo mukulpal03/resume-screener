@@ -7,7 +7,11 @@ import { UploadCloud, FileText } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { toast } from '@repo/ui';
 
-export default function UploadResumeCard() {
+interface UploadResumeCardProps {
+  onUpload: (file: File) => Promise<void>;
+}
+
+export default function UploadResumeCard({ onUpload }: UploadResumeCardProps) {
   const [file, setFile] = useState<File | null>(null);
   const [dragActive, setDragActive] = useState(false);
 
@@ -19,14 +23,20 @@ export default function UploadResumeCard() {
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   ];
 
-  function handleFile(selectedFile: File) {
+  async function handleFile(selectedFile: File) {
     if (!allowedTypes.includes(selectedFile.type)) {
       toast.error('Only PDF, DOC or DOCX files allowed');
       return;
     }
 
     setFile(selectedFile);
-    toast.success('Resume uploaded successfully');
+
+    try {
+      await onUpload(selectedFile);
+      toast.success('Resume uploaded successfully');
+    } catch {
+      toast.error('Failed to upload resume');
+    }
   }
 
   function handleDrop(e: DragEvent<HTMLDivElement>) {
