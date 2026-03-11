@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { UploadCloud, FileText } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { toast } from 'sonner';
+import { toast } from '@repo/ui';
 
 export default function UploadResumeCard() {
   const [file, setFile] = useState<File | null>(null);
@@ -26,6 +26,7 @@ export default function UploadResumeCard() {
     }
 
     setFile(selectedFile);
+    toast.success('Resume uploaded successfully');
   }
 
   function handleDrop(e: DragEvent<HTMLDivElement>) {
@@ -69,28 +70,52 @@ export default function UploadResumeCard() {
             dragActive && 'border-primary bg-muted/30'
           )}
         >
+          {/* File input should ALWAYS exist */}
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            ref={fileInputRef}
+            onChange={handleChange}
+            className="hidden"
+          />
+
           {!file ? (
             <>
               <p className="text-sm text-muted-foreground">Drag & drop your resume here</p>
 
               <p className="text-xs text-muted-foreground">Supported formats: PDF, DOC, DOCX</p>
 
-              <input
-                type="file"
-                accept=".pdf,.doc,.docx"
-                ref={fileInputRef}
-                onChange={handleChange}
-                className="hidden"
-              />
-
               <Button variant="outline" onClick={openFileDialog}>
                 Browse File
               </Button>
             </>
           ) : (
-            <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-primary" />
-              <span className="text-sm font-medium">{file.name}</span>
+            <div className="flex flex-col items-center gap-3">
+              <div className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-primary" />
+                <span className="text-sm font-medium">{file.name}</span>
+              </div>
+
+              <div className="flex gap-3">
+                <Button variant="outline" size="sm" onClick={openFileDialog}>
+                  Change File
+                </Button>
+
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => {
+                    setFile(null);
+                    if (fileInputRef.current) {
+                      fileInputRef.current.value = '';
+                    }
+
+                    toast.info('File removed');
+                  }}
+                >
+                  Remove
+                </Button>
+              </div>
             </div>
           )}
         </div>
