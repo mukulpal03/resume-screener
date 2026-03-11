@@ -3,15 +3,20 @@ import { Navbar, UploadResumeCard, JDTextarea, Text, AppButton } from '@repo/ui'
 import { validateResumeFlow } from './lib/resume-validation';
 import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
-
+import { uploadResume } from './services/resume.service';
+import { useState } from 'react';
 export default function Page() {
   const router = useRouter();
 
-  // Temporary UI values (backend not ready yet)
-  const resumeFile: File | null = null;
+  const [resumeFile, setResumeFile] = useState<File | null>(null);
+
   const jobDescription = '';
 
-  const handleAnalyze = () => {
+  const handleFileupload = async (file: File) => {
+    setResumeFile(file);
+  };
+
+  const handleAnalyze = async () => {
     const error = validateResumeFlow(resumeFile, jobDescription);
 
     if (error) {
@@ -19,8 +24,16 @@ export default function Page() {
       return;
     }
 
-    // Redirect to results page
-    router.push('/results');
+    try {
+      if (resumeFile) {
+        await uploadResume(resumeFile);
+
+        toast.success('Resume Parsed Successfully');
+        router.push('/results');
+      }
+    } catch {
+      toast.error('Failed to upload resume');
+    }
   };
 
   return (
@@ -41,7 +54,7 @@ export default function Page() {
 
         {/* Upload Section */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-          <UploadResumeCard />
+          <UploadResumeCard onUpload={handleFileupload} />
           <JDTextarea />
         </div>
         {/* Analyze Button */}
