@@ -1,4 +1,4 @@
-import { Navbar, UploadResumeCard, JDTextarea, Text } from '@repo/ui';
+import { Navbar, UploadResumeCard, JDTextarea, Text, AppButton } from '@repo/ui';
 
 export default function Page() {
   return (
@@ -22,6 +22,7 @@ export default function Page() {
           <UploadResumeCard />
           <JDTextarea />
         </div>
+        <AppButton size="md">Analyze Resume</AppButton>
       </main>
     </>
   );
