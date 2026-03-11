@@ -27,7 +27,6 @@ export default function Page() {
     try {
       if (resumeFile) {
         await uploadResume(resumeFile);
-
         toast.success('Resume Parsed Successfully');
         router.push('/results');
       }

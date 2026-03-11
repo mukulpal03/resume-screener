@@ -1,9 +1,9 @@
-export function validateResumeFlow(resumeFile: File | null, jobDescription: string) {
+export function validateResumeFlow(resumeFile: File | null, jobDescription?: string) {
   if (!resumeFile) {
     return 'Please upload your resume';
   }
 
-  if (!jobDescription.trim()) {
+  if (!jobDescription?.trim()) {
     return 'Please paste the job description';
   }
 
