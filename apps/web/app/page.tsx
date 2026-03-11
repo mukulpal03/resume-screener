@@ -5,17 +5,14 @@ export default function Page() {
     <>
       <Navbar />
 
-      <div className="p-10 border bg-red-100 w-full text-center">
-        <Text size="7xl">
+      <div className="p-10 text-center flex flex-col items-center justify-center gap-10">
+        <Text as="h1" size="6xl" weight="semibold" className="leading-normal">
           Improve Your Resume <br />
           for Dream Jobs
         </Text>
-        <Text size="sm" className="text-muted-foreground mt-4">
-          Upload your resume to get started
-        </Text>
-        <main className=" border border-black flex min-h-screen items-center justify-center p-24">
+        <div className="flex items-center justify-center gap-10 w-full max-w-4xl ">
           <UploadResumeCard />
-        </main>
+        </div>
       </div>
     </>
   );
