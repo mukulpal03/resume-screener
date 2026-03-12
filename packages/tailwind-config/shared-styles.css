@@ -4,8 +4,11 @@
 @source "../../packages/**/*.{js,ts,jsx,tsx}";
 
 /* Theme tokens for Tailwind */
-
 @theme {
+  /* fonts */
+  --font-sans: var(--font-poppins);
+
+  /* colors */
   --color-background: hsl(var(--background));
   --color-foreground: hsl(var(--foreground));
 
