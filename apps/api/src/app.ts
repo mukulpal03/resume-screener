@@ -6,8 +6,6 @@ import { corsOptions } from './utils/cors';
 
 const app: Express = express();
 
-app.use(cors(corsOptions));
-app.use(express.json());
 app.use(clerkMiddleware());
 
 app.use('/webhook', webhookRouter);
