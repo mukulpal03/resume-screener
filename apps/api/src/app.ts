@@ -3,6 +3,8 @@ import { clerkMiddleware } from '@clerk/express';
 import webhookRouter from './routes/webhook';
 import upload from './config/multer';
 import extractText from './utils/extractFileContent';
+import cors from 'cors';
+import { corsOptions } from './utils/cors';
 
 const app: Express = express();
 
@@ -11,6 +13,7 @@ app.use(clerkMiddleware());
 app.use('/webhook', webhookRouter);
 
 app.use(express.json());
+app.use(cors(corsOptions));
 
 app.post('/upload', upload.single('resume'), async (req, res) => {
   if (!req.file) {
