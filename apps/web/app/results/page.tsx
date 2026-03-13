@@ -1,4 +1,10 @@
-import { ResultScoreCard, ResultBreakdown, ResultKeywords, Text } from '@repo/ui';
+import {
+  ResultScoreCard,
+  ResultBreakdown,
+  ResultKeywords,
+  Text,
+  ResultSuggestions,
+} from '@repo/ui';
 
 export default function ResultsPage() {
   const breakdown = {
@@ -45,7 +51,15 @@ export default function ResultsPage() {
 
       {/* Suggestions */}
       <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground shadow-sm">
-        AI Suggestions (Coming Next)
+        <ResultSuggestions
+          suggestions={[
+            {
+              section: 'Experience',
+              issue: 'All experience dates are in the future',
+              fix: 'Correct employment timeline',
+            },
+          ]}
+        />{' '}
       </div>
     </main>
   );

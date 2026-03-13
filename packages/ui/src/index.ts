@@ -14,3 +14,4 @@ export { default as AppButton } from './components/common/app-button';
 export { default as ResultScoreCard } from './components/results/result-score-card';
 export { default as ResultBreakdown } from './components/results/result-breakdown';
 export { default as ResultKeywords } from './components/results/result-keywords';
+export { default as ResultSuggestions } from './components/results/result-suggestion';
