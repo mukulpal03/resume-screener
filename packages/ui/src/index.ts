@@ -9,3 +9,4 @@ export { default as UploadResumeCard } from './components/upload/upload-resume-c
 export { default as Text } from './components/typography/text';
 export { default as JDTextarea } from './components/input/jd-textarea';
 export { default as AppButton } from './components/common/app-button';
+export { default as ResultScoreCard } from './components/results/result-score-card';
