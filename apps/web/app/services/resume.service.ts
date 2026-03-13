@@ -5,7 +5,7 @@ export async function uploadResume(file: File, jobDescription?: string) {
 
   if (jobDescription) formData.append('jobDescription', jobDescription);
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/upload`, {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume/upload`, {
     method: 'POST',
     body: formData,
   });
