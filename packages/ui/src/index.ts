@@ -2,6 +2,7 @@
 export * from './components/ui/button';
 export * from './components/ui/sonner';
 export * from './components/ui/card';
+export * from './components/ui/progress';
 export { toast } from 'sonner';
 
 //custom components
