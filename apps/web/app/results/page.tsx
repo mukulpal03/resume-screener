@@ -1,4 +1,4 @@
-import { ResultScoreCard, ResultBreakdown, Text } from '@repo/ui';
+import { ResultScoreCard, ResultBreakdown, ResultKeywords, Text } from '@repo/ui';
 
 export default function ResultsPage() {
   const breakdown = {
@@ -36,7 +36,10 @@ export default function ResultsPage() {
 
         {/* Keywords placeholder */}
         <div className="rounded-xl border bg-card p-6 shadow-sm flex items-center justify-center text-muted-foreground">
-          Keyword Analysis (Coming Next)
+          <ResultKeywords
+            matched={['React', 'Node.js', 'MongoDB', 'GraphQL']}
+            missing={['Docker', 'AWS', 'Redis']}
+          />
         </div>
       </div>
 
