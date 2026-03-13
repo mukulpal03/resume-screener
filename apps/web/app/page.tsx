@@ -25,7 +25,7 @@ export default function Page() {
 
     try {
       if (resumeFile) {
-        await uploadResume(resumeFile);
+        await uploadResume(resumeFile, jobDescription);
         toast.success('Resume Parsed Successfully');
         router.push('/results');
       }
