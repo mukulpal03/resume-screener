@@ -10,8 +10,7 @@ export default function Page() {
 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
 
-  const jobDescription = '';
-
+  const [jobDescription, setJobDescription] = useState('');
   const handleFileupload = async (file: File) => {
     setResumeFile(file);
   };
@@ -54,7 +53,7 @@ export default function Page() {
         {/* Upload Section */}
         <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
           <UploadResumeCard onUpload={handleFileupload} />
-          <JDTextarea />
+          <JDTextarea value={jobDescription} onChange={setJobDescription} />
         </div>
         {/* Analyze Button */}
         <div className="mt-10 flex justify-center">
