@@ -14,53 +14,47 @@ export default function ResultsPage() {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-16 space-y-12">
+    <main className="mx-auto max-w-4xl px-6 py-14 flex flex-col gap-8">
       {/* Header */}
-      <div className="text-center space-y-2">
-        <Text as="h1" size="4xl" weight="semibold">
-          Resume Analysis Results
+      <div className="flex flex-col gap-1">
+        <Text size="xs" weight="semibold" className="text-slate-400 tracking-widest uppercase">
+          Analysis Complete
         </Text>
-
-        <Text size="sm" className="text-muted-foreground">
+        <Text as="h1" size="4xl" weight="bold" className="text-slate-900 tracking-tight">
+          Resume Results
+        </Text>
+        <Text size="sm" className="text-slate-400 mt-1">
           See how well your resume matches the job description
         </Text>
       </div>
 
-      {/* Score Card */}
-      <div className="flex justify-center">
-        <div className="w-full max-w-lg">
-          <ResultScoreCard score={95} />
-        </div>
+      {/* Score + Breakdown side by side on top row */}
+      <div className="grid gap-6 md:grid-cols-[1fr_1.4fr]">
+        <ResultScoreCard score={95} />
+        <ResultBreakdown breakdown={breakdown} />
       </div>
 
-      {/* Breakdown + Keywords */}
-      <div className="grid gap-6 md:grid-cols-2">
-        {/* Breakdown */}
-        <div className="rounded-xl border bg-card p-6 shadow-sm">
-          <ResultBreakdown breakdown={breakdown} />
-        </div>
+      {/* Keywords full width */}
+      <ResultKeywords
+        matched={['React', 'Node.js', 'MongoDB', 'GraphQL']}
+        missing={['Docker', 'AWS', 'Redis']}
+      />
 
-        {/* Keywords placeholder */}
-        <div className="rounded-xl border bg-card p-6 shadow-sm flex items-center justify-center text-muted-foreground">
-          <ResultKeywords
-            matched={['React', 'Node.js', 'MongoDB', 'GraphQL']}
-            missing={['Docker', 'AWS', 'Redis']}
-          />
-        </div>
-      </div>
-
-      {/* Suggestions */}
-      <div className="rounded-xl border bg-card p-8 text-center text-muted-foreground shadow-sm">
-        <ResultSuggestions
-          suggestions={[
-            {
-              section: 'Experience',
-              issue: 'All experience dates are in the future',
-              fix: 'Correct employment timeline',
-            },
-          ]}
-        />{' '}
-      </div>
+      {/* Suggestions full width */}
+      <ResultSuggestions
+        suggestions={[
+          {
+            section: 'Experience',
+            issue: 'All experience dates are in the future',
+            fix: 'Correct employment timeline',
+          },
+          {
+            section: 'Skills',
+            issue: 'Missing key technologies listed in the job description',
+            fix: 'Add Docker, AWS, and Redis to your skills section',
+          },
+        ]}
+      />
     </main>
   );
 }
