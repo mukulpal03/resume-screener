@@ -6,10 +6,13 @@ interface Props {
   missing: string[];
 }
 
-export default function ResultKeywords({ matched, missing }: Props) {
+export default function ResultKeywords({ matched = [], missing = [] }: Props) {
+  const safeMatched = matched ?? [];
+  const safeMissing = missing ?? [];
+
   const matchRate =
-    matched.length + missing.length > 0
-      ? Math.round((matched.length / (matched.length + missing.length)) * 100)
+    safeMatched.length + safeMissing.length > 0
+      ? Math.round((safeMatched.length / (safeMatched.length + safeMissing.length)) * 100)
       : 0;
 
   const ringColor = matchRate >= 70 ? '#22c55e' : matchRate >= 40 ? '#f59e0b' : '#ef4444';
