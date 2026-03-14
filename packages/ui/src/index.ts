@@ -15,3 +15,4 @@ export { default as ResultScoreCard } from './components/results/result-score-ca
 export { default as ResultBreakdown } from './components/results/result-breakdown';
 export { default as ResultKeywords } from './components/results/result-keywords';
 export { default as ResultSuggestions } from './components/results/result-suggestion';
+export { Spinner } from './components/common/spinner';
