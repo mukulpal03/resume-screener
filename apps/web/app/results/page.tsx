@@ -8,28 +8,7 @@ import {
   Text,
   ResultSuggestions,
 } from '@repo/ui';
-
-type ResumeResult = {
-  overall_score: number;
-  breakdown: {
-    skills_match: number;
-    experience_relevance: number;
-    education: number;
-  };
-  matched_keywords: string[];
-  missing_keywords: string[];
-  suggestions: {
-    section: string;
-    issue: string;
-    fix: string;
-  }[];
-};
-
-type ResumeResponse = {
-  success: boolean;
-  characters: number;
-  result: ResumeResult;
-};
+import type { ResumeResponse } from '@repo/types';
 
 export default function ResultsPage() {
   const [data, setData] = useState<ResumeResponse | null>(null);
@@ -62,22 +41,18 @@ export default function ResultsPage() {
           See how well your resume matches the job description
         </Text>
       </div>
-
       {/* Score + Breakdown */}
       <div className="grid gap-6 md:grid-cols-[1fr_1.4fr]">
-        <ResultScoreCard score={data.result.overall_score} />
-
-        <ResultBreakdown breakdown={data.result.breakdown} />
+        <ResultScoreCard score={data?.result?.overall_score} />
+        <ResultBreakdown breakdown={data?.result?.breakdown} />
       </div>
-
       {/* Keywords */}
       <ResultKeywords
-        matched={data.result.matched_keywords ?? []}
-        missing={data.result.missing_keywords ?? []}
+        matched={data?.result?.matched_keywords ?? []}
+        missing={data?.result?.missing_keywords ?? []}
       />
-
       {/* Suggestions */}
-      <ResultSuggestions suggestions={data.result.suggestions} />
+      <ResultSuggestions suggestions={data?.result?.suggestions ?? []} />
     </main>
   );
 }
