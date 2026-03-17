@@ -6,11 +6,7 @@ import { uploadResume } from '.././services/resume.service';
 import { validateResumeFlow } from '.././lib/resume-validation';
 import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
-
-type FormValues = {
-  resume: File | null;
-  jobDescription: string;
-};
+import type { FormValues } from '@repo/types';
 
 export default function ResumeUploadForm() {
   const router = useRouter();

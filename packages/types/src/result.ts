@@ -7,3 +7,8 @@ export interface Breakdown {
 export interface ResultBreakdownProps {
   breakdown: Breakdown;
 }
+
+export type FormValues = {
+  resume: File | null;
+  jobDescription: string;
+};
