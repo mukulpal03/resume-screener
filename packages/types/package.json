@@ -1,6 +1,11 @@
 {
   "name": "@repo/types",
+<<<<<<< HEAD
   "version": "0.0.1",
+=======
+  "version": "0.0.0",
+  "private": true,
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

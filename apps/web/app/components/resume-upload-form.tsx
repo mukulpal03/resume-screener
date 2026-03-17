@@ -2,8 +2,13 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { UploadResumeCard, JDTextarea, AppButton, Spinner } from '@repo/ui';
+<<<<<<< HEAD
 import { uploadResume } from '../services/resume.service';
 import { validateResumeFlow } from '../lib/resume-validation';
+=======
+import { uploadResume } from '.././services/resume.service';
+import { validateResumeFlow } from '.././lib/resume-validation';
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
 import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
 import type { FormValues } from '@repo/types';
@@ -40,6 +45,7 @@ export default function ResumeUploadForm() {
     if (!resumeFile) return;
 
     try {
+<<<<<<< HEAD
       setLoading(true);
       setStepIndex(0);
 
@@ -51,6 +57,20 @@ export default function ResumeUploadForm() {
 
       clearInterval(interval);
       router.push('/results');
+=======
+      if (resumeFile) {
+        setLoading(true);
+        const interval = setInterval(() => {
+          setStepIndex((prev) => {
+            if (prev < RESUME_UPLOAD_STEPS.length - 1) return prev + 1;
+            return prev;
+          });
+        }, 1200);
+        await uploadResume(resumeFile!, jobDescription);
+        clearInterval(interval);
+        router.push('/results');
+      }
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
     } catch {
       toast.error('Failed to upload resume');
     } finally {
@@ -63,7 +83,13 @@ export default function ResumeUploadForm() {
       {loading && (
         <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur">
           <Spinner className="h-10 w-10 text-primary" />
+<<<<<<< HEAD
           <h2 className="mt-4 text-xl font-semibold">Analyzing Your Resume</h2>
+=======
+
+          <h2 className="mt-4 text-xl font-semibold">Analyzing Your Resume</h2>
+
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
           <p className="text-muted-foreground mt-2">{RESUME_UPLOAD_STEPS[stepIndex]}</p>
         </div>
       )}

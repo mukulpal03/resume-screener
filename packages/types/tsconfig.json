@@ -1,5 +1,9 @@
 {
+<<<<<<< HEAD
   "extends": "..//typescript-config/base.json",
+=======
+  "extends": "../../packages/typescript-config/base.json",
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
   "compilerOptions": {
     "outDir": "dist"
   },
