@@ -16,6 +16,10 @@ export { default as ResultBreakdown } from './components/results/result-breakdow
 export { default as ResultKeywords } from './components/results/result-keywords';
 export { default as ResultSuggestions } from './components/results/result-suggestion';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+
+>>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
 =======
 
 >>>>>>> e571708 (refactor: add Spinner wrapper, move steps to constants file)
