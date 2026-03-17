@@ -246,6 +246,8 @@ importers:
         specifier: ^4.0.0
         version: 4.2.1
 
+  packages/types: {}
+
   packages/typescript-config: {}
 
   packages/ui:
@@ -256,6 +258,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.2.4
         version: 1.2.4(@types/react@19.2.2)(react@19.2.0)
+      '@repo/types':
+        specifier: workspace:*
+        version: link:../types
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
