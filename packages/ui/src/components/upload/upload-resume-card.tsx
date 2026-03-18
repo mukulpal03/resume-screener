@@ -95,7 +95,7 @@ export default function UploadResumeCard({ onUpload }: UploadResumeCardProps) {
 
               <p className="text-xs text-muted-foreground">Supported formats: PDF, DOC, DOCX</p>
 
-              <Button variant="outline" onClick={openFileDialog}>
+              <Button type="button" variant="outline" onClick={openFileDialog}>
                 Browse File
               </Button>
             </>
@@ -107,11 +107,12 @@ export default function UploadResumeCard({ onUpload }: UploadResumeCardProps) {
               </div>
 
               <div className="flex gap-3">
-                <Button variant="outline" size="sm" onClick={openFileDialog}>
+                <Button type="button" variant="outline" size="sm" onClick={openFileDialog}>
                   Change File
                 </Button>
 
                 <Button
+                  type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => {

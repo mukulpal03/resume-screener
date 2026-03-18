@@ -1,15 +1,6 @@
 import { Card, CardContent, Progress } from '@repo/ui';
 import { Text } from '@repo/ui';
-
-interface Breakdown {
-  skills_match: number;
-  experience_relevance: number;
-  education: number;
-}
-
-interface Props {
-  breakdown: Breakdown;
-}
+import type { ResultBreakdownProps } from '@repo/types';
 
 const getScoreColor = (value: number) => {
   if (value >= 70)
@@ -33,7 +24,7 @@ const getScoreLabel = (value: number) => {
   return 'Weak';
 };
 
-export default function ResultBreakdown({ breakdown }: Props) {
+export default function ResultBreakdown({ breakdown }: ResultBreakdownProps) {
   const items = [
     {
       label: 'Skills Match',
