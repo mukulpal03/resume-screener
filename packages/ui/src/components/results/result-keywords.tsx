@@ -1,15 +1,17 @@
 import { Card, CardContent } from '@repo/ui';
 import { Text } from '@repo/ui';
+import type { ResultKeywordsProps } from '@repo/types';
 
-interface Props {
-  matched: string[];
-  missing: string[];
-}
+export default function ResultKeywords({ matched = [], missing = [] }: ResultKeywordsProps) {
+  const safeMatched = matched ?? [];
+  const safeMissing = missing ?? [];
 
-export default function ResultKeywords({ matched, missing }: Props) {
   const matchRate =
-    matched.length + missing.length > 0
-      ? Math.round((matched.length / (matched.length + missing.length)) * 100)
+    (safeMatched?.length ?? 0) + (safeMissing?.length ?? 0) > 0
+      ? Math.round(
+          ((safeMatched?.length ?? 0) / ((safeMatched?.length ?? 0) + (safeMissing?.length ?? 0))) *
+            100
+        )
       : 0;
 
   const ringColor = matchRate >= 70 ? '#22c55e' : matchRate >= 40 ? '#f59e0b' : '#ef4444';
