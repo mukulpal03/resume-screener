@@ -47,7 +47,8 @@ export default function ResumeUploadForm() {
         setStepIndex((prev) => (prev < RESUME_UPLOAD_STEPS.length - 1 ? prev + 1 : prev));
       }, 1200);
 
-      await uploadResume(resumeFile, jobDescription);
+      const result = await uploadResume(resumeFile, jobDescription);
+      sessionStorage.setItem('resumeResult', JSON.stringify(result));
 
       clearInterval(interval);
       router.push('/results');
