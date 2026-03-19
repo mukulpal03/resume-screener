@@ -252,7 +252,11 @@ importers:
         specifier: ^4.0.0
         version: 4.2.1
 
-  packages/types: {}
+  packages/types:
+    devDependencies:
+      '@types/react':
+        specifier: 19.2.2
+        version: 19.2.2
 
   packages/typescript-config: {}
 

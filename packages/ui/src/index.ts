@@ -7,6 +7,7 @@ export { toast } from 'sonner';
 
 //custom components
 export { default as Navbar } from './components/layout/navbar';
+export { default as Footer } from './components/layout/footer';
 export { default as UploadResumeCard } from './components/upload/upload-resume-card';
 export { default as Text } from './components/typography/text';
 export { default as JDTextarea } from './components/input/jd-textarea';
@@ -15,5 +16,8 @@ export { default as ResultScoreCard } from './components/results/result-score-ca
 export { default as ResultBreakdown } from './components/results/result-breakdown';
 export { default as ResultKeywords } from './components/results/result-keywords';
 export { default as ResultSuggestions } from './components/results/result-suggestion';
-
+export { cn } from './lib/utils';
 export { Spinner } from './components/common/spinner';
+export { default as SectionHeader } from './components/common/section-header';
+export { default as StarRating } from './components/common/star-rating';
+export { default as Badge } from './components/common/badge';
