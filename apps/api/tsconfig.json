@@ -1,0 +1,16 @@
+{
+  "extends": "@repo/typescript-config/node.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDirs": ["./src", "../../packages/db/src"],
+    "module": "node16",
+    "moduleResolution": "node16",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "paths": {
+      "@repo/db": ["../../packages/db/src/index.ts"]
+    }
+  },
+  "include": ["src", "../../packages/db/src"],
+  "exclude": ["node_modules", "dist"]
+}

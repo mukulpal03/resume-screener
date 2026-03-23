@@ -1,0 +1,130 @@
+@import 'tailwindcss';
+
+@source "../../apps/**/*.{js,ts,jsx,tsx}";
+@source "../../packages/**/*.{js,ts,jsx,tsx}";
+
+/* Theme tokens for Tailwind */
+@theme {
+  /* fonts */
+  --font-sans: var(--font-poppins);
+  --font-playfair: var(--font-playfair);
+
+  /* colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-border: hsl(var(--border));
+
+  /* homepage design tokens */
+  --color-ink: #0a0a0a;
+  --color-ink2: #3a3a3a;
+  --color-ink3: #777777;
+  --color-ink4: #aaaaaa;
+  --color-off: #f7f6f3;
+  --color-blue: #2563eb;
+  --color-blue-light: #eef3ff;
+  --color-green: #059669;
+  --color-border-strong: rgba(0, 0, 0, 0.14);
+}
+
+/* Theme variables */
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 84% 4.9%;
+
+  --muted: 150 20% 96%;
+  --muted-foreground: 215 16% 46%;
+
+  --primary: 158 64% 32%;
+  --primary-foreground: 0 0% 100%;
+
+  --border: 150 20% 88%;
+
+  /* custom tokens */
+  --ink: #0a0a0a;
+  --ink2: #3a3a3a;
+  --ink3: #6b7280;
+  --ink4: #9ca3af;
+  --off: #f5faf7;
+  --green-50: #ecfdf5;
+  --green-100: #d1fae5;
+  --green-600: #059669;
+  --green-700: #047857;
+  --border-strong: rgba(0, 0, 0, 0.12);
+}
+
+.dark {
+  --background: 222 84% 5%;
+  --foreground: 210 40% 98%;
+  --muted: 217 33% 17%;
+  --muted-foreground: 215 20% 65%;
+  --primary: 158 64% 40%;
+  --primary-foreground: 0 0% 100%;
+  --border: 217 33% 17%;
+}
+
+* {
+  border-color: hsl(var(--border));
+}
+
+/* Animations */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes pulse-green {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes load-bar {
+  from {
+    width: 60%;
+  }
+
+  to {
+    width: 92%;
+  }
+}
+
+@keyframes float-card {
+  0%,
+  100% {
+    transform: translateY(0px) rotate(var(--rotate, 0deg));
+  }
+
+  50% {
+    transform: translateY(-6px) rotate(var(--rotate, 0deg));
+  }
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.5;
+    transform: scale(0.85);
+  }
+}
