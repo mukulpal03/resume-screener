@@ -1,5 +1,7 @@
 FROM node:20-alpine AS base
-RUN npm install -g pnpm@9.0.0
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 
 # ---- prune stage ----
 # turborepo prune creates a minimal subset of the monorepo
@@ -36,7 +38,9 @@ RUN pnpm --filter @repo/api build
 
 # ---- production stage ----
 FROM node:20-alpine AS runner
-RUN npm install -g pnpm@9.0.0
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 WORKDIR /app
 
 ENV NODE_ENV=production
