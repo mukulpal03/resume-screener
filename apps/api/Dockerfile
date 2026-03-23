@@ -27,6 +27,9 @@ RUN pnpm --filter @repo/api build
 
 # ---- production stage ----
 FROM node:20-alpine AS runner
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
 WORKDIR /app
 
 ENV NODE_ENV=production
