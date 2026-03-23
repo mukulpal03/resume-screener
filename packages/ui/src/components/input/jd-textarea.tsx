@@ -1,18 +1,9 @@
 'use client';
 
 import { Textarea } from '../ui/textarea';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { FileText } from 'lucide-react';
-import { cn } from '../../lib/utils';
-
-interface JDTextareaProps {
-  label?: string;
-  placeholder?: string;
-  value: string;
-  onChange: (value: string) => void;
-  maxLength?: number;
-  className?: string;
-}
+import { cn, Text } from '@repo/ui';
+import type { JDTextareaProps } from '@repo/types';
 
 export default function JDTextarea({
   label = 'Job Description',
@@ -22,31 +13,71 @@ export default function JDTextarea({
   maxLength = 2000,
   className,
 }: JDTextareaProps) {
+  const charCount = value.length;
+  const isNearLimit = charCount > maxLength * 0.85;
+
   return (
-    <Card className="w-full border-dashed border-2">
-      <CardHeader className="items-center text-center">
-        <FileText className="h-8 w-8 text-muted-foreground" />
+    <div className="flex flex-col gap-2">
+      <Text size="sm" weight="medium" className="text-foreground">
+        {label}
+      </Text>
 
-        <CardTitle className="mt-2 text-lg">{label}</CardTitle>
-      </CardHeader>
+      <div
+        className={cn(
+          'relative rounded-xl border-2 border-dashed transition-all duration-200',
+          value.length > 0
+            ? 'border-primary/40 bg-primary/5'
+            : 'border-border bg-muted/30 focus-within:border-primary/40 focus-within:bg-primary/5'
+        )}
+      >
+        {/* Icon top right */}
+        <div className="absolute top-3 right-3 z-10">
+          <div
+            className={cn(
+              'w-7 h-7 rounded-lg flex items-center justify-center transition-colors',
+              value.length > 0 ? 'bg-primary/10' : 'bg-muted'
+            )}
+          >
+            <FileText
+              className={cn(
+                'h-3.5 w-3.5 transition-colors',
+                value.length > 0 ? 'text-primary' : 'text-muted-foreground'
+              )}
+            />
+          </div>
+        </div>
 
-      <CardContent className="flex flex-col gap-3">
         <Textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
           placeholder={placeholder}
           maxLength={maxLength}
-          className={cn('min-h-[160px] resize-none', className)}
+          className={cn(
+            'min-h-[180px] resize-none border-0 bg-transparent',
+            'focus-visible:ring-0 focus-visible:ring-offset-0',
+            'text-sm placeholder:text-muted-foreground/50',
+            'pt-4 pr-12',
+            className
+          )}
         />
 
-        <div className="flex justify-between text-xs text-muted-foreground">
-          <span>Paste the job description to analyze your resume</span>
-
-          <span>
-            {value.length}/{maxLength}
-          </span>
+        {/* Bottom bar */}
+        <div className="flex items-center justify-between px-3 pb-3">
+          <Text size="xs" className="text-muted-foreground/60">
+            Paste the full job description for best results
+          </Text>
+          <Text
+            as="span"
+            size="xs"
+            className={cn(
+              'tabular-nums transition-colors',
+              isNearLimit ? 'text-amber-500' : 'text-muted-foreground/60'
+            )}
+          >
+            {charCount}/{maxLength}
+          </Text>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }

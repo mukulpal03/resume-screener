@@ -8,11 +8,6 @@ export interface ResultBreakdownProps {
   breakdown: Breakdown;
 }
 
-export type FormValues = {
-  resume: File | null;
-  jobDescription: string;
-};
-
 export interface ResumeResult {
   overall_score: number;
   breakdown: Breakdown;

@@ -1,18 +1,18 @@
 'use client';
+
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { UploadResumeCard, JDTextarea, AppButton, Spinner } from '@repo/ui';
+import { UploadResumeCard, JDTextarea, AppButton, Spinner, Text } from '@repo/ui';
 import { uploadResume } from '../services/resume.service';
 import { validateResumeFlow } from '../lib/resume-validation';
 import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
 import type { FormValues } from '@repo/types';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
-
+import { cn } from '@repo/ui';
 export default function ResumeUploadForm() {
   const [loading, setLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-
   const router = useRouter();
 
   const { handleSubmit, setValue, watch } = useForm<FormValues>({
@@ -31,12 +31,10 @@ export default function ResumeUploadForm() {
 
   const onSubmit = async () => {
     const error = validateResumeFlow(resumeFile, jobDescription);
-
     if (error) {
       toast.error(error);
       return;
     }
-
     if (!resumeFile) return;
 
     try {
@@ -59,18 +57,59 @@ export default function ResumeUploadForm() {
     }
   };
 
+  const progress = ((stepIndex + 1) / RESUME_UPLOAD_STEPS.length) * 100;
+
   return (
     <>
+      {/* ── Loading Overlay ── */}
       {loading && (
-        <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-white/80 backdrop-blur">
-          <Spinner className="h-10 w-10 text-primary" />
-          <h2 className="mt-4 text-xl font-semibold">Analyzing Your Resume</h2>
-          <p className="text-muted-foreground mt-2">{RESUME_UPLOAD_STEPS[stepIndex]}</p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm">
+          <div className="flex flex-col items-center gap-5 max-w-[320px] w-full text-center px-6">
+            {/* Spinner */}
+            <Spinner className="w-14 h-14" />
+
+            {/* Title */}
+            <Text as="h2" size="xl" weight="semibold" className="text-foreground">
+              Analyzing Your Resume
+            </Text>
+
+            {/* Progress bar */}
+            <div className="w-full flex flex-col gap-2">
+              <div className="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+              {/* Step dots */}
+              <div className="flex items-center justify-center gap-1.5">
+                {RESUME_UPLOAD_STEPS.map((_, i) => (
+                  <div
+                    key={i}
+                    className={cn(
+                      'rounded-full transition-all duration-300',
+                      i < stepIndex
+                        ? 'w-1.5 h-1.5 bg-primary'
+                        : i === stepIndex
+                          ? 'w-2.5 h-2.5 bg-primary ring-2 ring-primary/20'
+                          : 'w-1.5 h-1.5 bg-muted-foreground/25'
+                    )}
+                  />
+                ))}
+              </div>
+            </div>
+
+            {/* Current step text */}
+            <Text size="sm" className="text-muted-foreground">
+              {RESUME_UPLOAD_STEPS[stepIndex]}
+            </Text>
+          </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+      {/* ── Form ── */}
+      <form onSubmit={handleSubmit(onSubmit)} noValidate>
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <UploadResumeCard onUpload={handleFileUpload} />
           <JDTextarea
             value={jobDescription}
@@ -78,10 +117,20 @@ export default function ResumeUploadForm() {
           />
         </div>
 
-        <div className="mt-10 flex justify-center">
-          <AppButton type="submit" size="md" loading={loading}>
-            Analyze Resume
+        {/* Submit */}
+        <div className="mt-8 flex flex-col items-center gap-3">
+          <AppButton
+            type="submit"
+            variant="primary"
+            size="lg"
+            loading={loading}
+            className="min-w-[220px] rounded-xl"
+          >
+            {loading ? 'Analyzing...' : 'Analyze Resume →'}
           </AppButton>
+          <Text size="xs" className="text-muted-foreground">
+            Your resume is never stored — 100% private
+          </Text>
         </div>
       </form>
     </>

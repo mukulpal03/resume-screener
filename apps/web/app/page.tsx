@@ -1,23 +1,21 @@
-'use client';
-import { Navbar, Text } from '@repo/ui';
-import ResumeUploadForm from './components/resume-upload-form';
+import HeroSection from './sections/home/hero-section';
+import MarqueeSection from './sections/home/marquee-section';
+import StatsSection from './sections/home/stats-section';
+import FeaturesSection from './sections/home/features-section';
+import HowItWorksSection from './sections/home/how-it-works-section';
+import TestimonialsSection from './sections/home/testimonials-section';
+import CtaSection from './sections/home/cta-section';
+
 export default function Page() {
   return (
     <>
-      <Navbar />
-      <main className="mx-auto max-w-6xl px-6 py-16">
-        {/* Hero Section */}
-        <div className="text-center mb-16">
-          <Text as="h1" size="6xl" weight="semibold" className="leading-tight">
-            Improve Your Resume <br /> for Dream Jobs
-          </Text>
-
-          <Text size="lg" className="mt-4 text-muted-foreground">
-            Upload your resume and paste the job description to analyze compatibility instantly.
-          </Text>
-        </div>
-        <ResumeUploadForm />
-      </main>
+      <HeroSection />
+      <MarqueeSection />
+      <StatsSection />
+      <FeaturesSection />
+      <HowItWorksSection />
+      <TestimonialsSection />
+      <CtaSection />
     </>
   );
 }
