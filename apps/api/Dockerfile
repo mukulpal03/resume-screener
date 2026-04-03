@@ -23,7 +23,7 @@ RUN pnpm install --frozen-lockfile
 COPY --from=pruner /app/out/full/ .
 
 RUN pnpm --filter @repo/db db:generate || true
-RUN pnpm --filter @repo/api build
+RUN pnpm --filter @repo/api build && echo "=== dist contents ===" && ls -la apps/api/dist/ || echo "=== dist is EMPTY or missing ==="
 
 # ---- production stage ----
 FROM node:20-alpine AS runner
@@ -41,5 +41,7 @@ COPY --from=builder /app/package.json ./package.json
 WORKDIR /app/apps/api
 
 EXPOSE 8080
+
+RUN ls -la /app/apps/api/dist/
 
 CMD ["node", "dist/server.js"]
