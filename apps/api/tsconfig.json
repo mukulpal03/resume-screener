@@ -2,7 +2,7 @@
   "extends": "@repo/typescript-config/node.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDirs": ["./src", "../../packages/db/src"],
+    "rootDir": "./src",
     "module": "node16",
     "moduleResolution": "node16",
     "esModuleInterop": true,
