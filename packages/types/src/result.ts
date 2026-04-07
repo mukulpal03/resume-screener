@@ -18,6 +18,7 @@ export interface ResumeResult {
     issue: string;
     fix: string;
   }[];
+  summary?: string;
 }
 
 export type ResumeResponse = {

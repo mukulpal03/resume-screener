@@ -15,6 +15,13 @@
       "when": 1773121522073,
       "tag": "0001_organic_ken_ellis",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1775537948956,
+      "tag": "0002_rich_mad_thinker",
+      "breakpoints": true
     }
   ]
 }

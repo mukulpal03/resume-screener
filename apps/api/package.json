@@ -12,6 +12,7 @@
     "@clerk/express": "^2.0.2",
     "@google/generative-ai": "^0.24.1",
     "@repo/db": "workspace:*",
+    "@repo/types": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
