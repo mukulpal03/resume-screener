@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import { Poppins, Instrument_Serif, Geist, Playfair_Display } from 'next/font/google';
-import { Navbar, Footer, Toaster } from '@repo/ui';
+import { Footer, Toaster } from '@repo/ui';
 import { ClerkProvider } from '@clerk/nextjs';
 import { NAV_LINKS } from './constants/nav';
+import WebNavbar from './components/web-navbar';
+import ClerkUserSync from './components/clerk-user-sync';
 
 import './globals.css';
 
@@ -48,7 +50,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         className={`${poppins.variable} ${instrumentSerif.variable} ${geist.variable} ${playfair.variable}`}
       >
         <body className="font-sans">
-          <Navbar links={NAV_LINKS} />
+          <WebNavbar links={NAV_LINKS} />
+          <ClerkUserSync />
           {children}
           <Footer />
           <Toaster />
