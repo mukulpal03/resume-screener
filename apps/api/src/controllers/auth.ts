@@ -20,8 +20,6 @@ export const syncClerkUserController = async (req: Request, res: Response) => {
     const firstName = user.firstName ?? '';
     const lastName = user.lastName ?? '';
 
-    // If the same email exists with a different clerkId (or vice-versa), this can fail.
-    // We return a clear error so it can be investigated rather than silently corrupting data.
     const rows = await db
       .insert(usersTable)
       .values({
