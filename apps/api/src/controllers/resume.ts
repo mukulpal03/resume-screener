@@ -35,9 +35,14 @@ export const resumeHandler = async (req: Request, res: Response) => {
 
     const result = await analyzeResume(text, jobDescription);
 
-    await saveResult(user.id, result, text, jobDescription);
+    const saved = await saveResult(user.id, result, text, jobDescription);
 
-    return res.json({ success: true, characters: text.length, result });
+    return res.status(200).json({
+      success: true,
+      characters: text.length,
+      result,
+      resultId: saved.id,
+    });
   } catch (error) {
     console.error('Resume handler error:', error);
 

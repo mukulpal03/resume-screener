@@ -33,7 +33,7 @@ async function saveResult(
   jobDescription: string
 ) {
   try {
-    const newResult = await db
+    const rows = await db
       .insert(resultsTable)
       .values({
         userId: userId,
@@ -52,7 +52,12 @@ async function saveResult(
       })
       .returning();
 
-    return newResult;
+    const row = rows[0];
+    if (!row) {
+      throw new Error('Failed to save result');
+    }
+
+    return row;
   } catch (error) {
     console.error('Failed to save screening result:', error);
     throw new Error('Failed to save result', { cause: error });
