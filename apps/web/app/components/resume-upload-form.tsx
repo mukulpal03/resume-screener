@@ -10,10 +10,12 @@ import { useRouter } from 'next/navigation';
 import type { FormValues } from '@repo/types';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
 import { cn } from '@repo/ui';
+import { useAuth } from '@clerk/nextjs';
 export default function ResumeUploadForm() {
   const [loading, setLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const router = useRouter();
+  const { isSignedIn } = useAuth();
 
   const { handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -30,6 +32,12 @@ export default function ResumeUploadForm() {
   };
 
   const onSubmit = async () => {
+    if (!isSignedIn) {
+      toast.error('Please sign in to analyze a resume');
+      router.push('/sign-in');
+      return;
+    }
+
     const error = validateResumeFlow(resumeFile, jobDescription);
     if (error) {
       toast.error(error);
