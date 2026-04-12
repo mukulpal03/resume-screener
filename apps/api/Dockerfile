@@ -45,6 +45,6 @@ WORKDIR /app/apps/api
 
 EXPOSE 8080
 
-RUN ls -la /app/apps/api/dist/
+RUN find /app -name "server.js" 2>/dev/null || echo "server.js NOT FOUND ANYWHERE"
 
 CMD ["node", "dist/server.js"]
