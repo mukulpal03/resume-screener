@@ -9,7 +9,6 @@ import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
 import type { FormValues } from '@repo/types';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
-import { cn } from '@repo/ui';
 import { useAuth } from '@clerk/nextjs';
 export default function ResumeUploadForm() {
   const [loading, setLoading] = useState(false);
