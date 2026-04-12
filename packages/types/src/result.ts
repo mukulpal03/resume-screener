@@ -9,6 +9,8 @@ export interface ResultBreakdownProps {
 }
 
 export interface ResumeResult {
+  job_title?: string;
+  candidate_name?: string;
   overall_score: number;
   breakdown: Breakdown;
   matched_keywords: string[];

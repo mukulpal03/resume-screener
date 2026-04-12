@@ -18,6 +18,8 @@ Raw JSON only, starting with { and ending with }.
 
 SCHEMA:
 {
+  "job_title": <string, extracted from JD — e.g. "Senior Backend Engineer">,
+  "candidate_name": <string, extracted from resume — e.g. "Rahul Sharma", or "Unknown" if not found>,
   "overall_score": <number 0-100>,
   "breakdown": {
     "skills_match": <number 0-100>,
