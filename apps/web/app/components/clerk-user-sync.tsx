@@ -2,9 +2,10 @@
 
 import { useAuth } from '@clerk/nextjs';
 import { useEffect, useRef } from 'react';
+import { fetchFromApi } from '../lib/api';
 
 export default function ClerkUserSync() {
-  const { isSignedIn, getToken } = useAuth();
+  const { isSignedIn } = useAuth();
   const didRun = useRef(false);
 
   useEffect(() => {
@@ -18,20 +19,12 @@ export default function ClerkUserSync() {
 
     (async () => {
       try {
-        const token = await getToken();
-        if (!token) return;
-
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sync`, {
-          method: 'POST',
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-      } catch {
-        // Intentionally no UI toast: sync failures shouldn't block the user.
+        await fetchFromApi('/auth/sync', { method: 'POST' });
+      } catch (err) {
+        console.error('Clerk user sync failed:', err);
       }
     })();
-  }, [getToken, isSignedIn]);
+  }, [isSignedIn]);
 
   return null;
 }
