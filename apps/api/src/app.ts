@@ -3,10 +3,10 @@ import cors from 'cors';
 import { corsOptions } from './utils/cors';
 import resumeRouter from './routes/resume';
 import webhookRouter from './routes/webhook';
-import authRouter from './routes/auth';
 import resultsRouter from './routes/results';
 import { clerkMiddleware } from '@clerk/express';
 import { errorHandler } from './middleware/errorHandler';
+import { apiLimiter } from './middleware/rateLimiter';
 
 const app: Express = express();
 
@@ -15,6 +15,8 @@ const app: Express = express();
 app.use('/webhook', webhookRouter);
 
 app.use(cors(corsOptions));
+
+app.use(apiLimiter);
 
 const clerkSecretKey = process.env.CLERK_SECRET_KEY;
 const clerkPublishableKey = process.env.CLERK_PUBLISHABLE_KEY;
@@ -37,7 +39,6 @@ app.use(
 app.use(express.json());
 
 app.use('/resume', resumeRouter);
-app.use('/auth', authRouter);
 app.use('/results', resultsRouter);
 
 app.use(errorHandler);
