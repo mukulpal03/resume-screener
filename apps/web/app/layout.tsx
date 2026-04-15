@@ -4,7 +4,6 @@ import { Footer, Toaster } from '@repo/ui';
 import { ClerkProvider } from '@clerk/nextjs';
 import { NAV_LINKS } from './constants/nav';
 import WebNavbar from './components/web-navbar';
-import ClerkUserSync from './components/clerk-user-sync';
 
 import './globals.css';
 
@@ -51,7 +50,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       >
         <body className="font-sans">
           <WebNavbar links={NAV_LINKS} />
-          <ClerkUserSync />
           {children}
           <Footer />
           <Toaster />
