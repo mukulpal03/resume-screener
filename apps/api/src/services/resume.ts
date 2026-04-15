@@ -2,6 +2,7 @@ import { parseScoreResponse, validateScoreResponse } from '../validation/llmResp
 import { model } from '../lib/llm';
 import { ResumeResult } from '@repo/types';
 import { db, resultsTable, Suggestion } from '@repo/db';
+import { InternalServerError, UnprocessableEntityError } from '../utils/errors';
 
 async function analyzeResume(resumeText: string, jdText: string): Promise<ResumeResult> {
   try {
@@ -15,14 +16,21 @@ async function analyzeResume(resumeText: string, jdText: string): Promise<Resume
 
     return parsed;
   } catch (error) {
+    if (error instanceof UnprocessableEntityError) throw error;
+
+    // eslint-disable-next-line no-console
     console.error('Resume analysis failed:', error);
     if (error instanceof Error) {
       const { message } = error;
-      if (message.startsWith('Validation failed')) throw error;
-      if (message.startsWith('No JSON object found')) throw error;
-      if (message.startsWith('Truncated or malformed JSON')) throw error;
+      if (
+        message.startsWith('Validation failed') ||
+        message.startsWith('No JSON object found') ||
+        message.startsWith('Truncated or malformed JSON')
+      ) {
+        throw new UnprocessableEntityError(message);
+      }
     }
-    throw new Error('Failed to analyze resume', { cause: error });
+    throw new InternalServerError('Failed to analyze resume');
   }
 }
 
@@ -54,13 +62,16 @@ async function saveResult(
 
     const row = rows[0];
     if (!row) {
-      throw new Error('Failed to save result');
+      throw new InternalServerError('Failed to save result: No row returned');
     }
 
     return row;
   } catch (error) {
+    if (error instanceof InternalServerError) throw error;
+
+    // eslint-disable-next-line no-console
     console.error('Failed to save screening result:', error);
-    throw new Error('Failed to save result', { cause: error });
+    throw new InternalServerError('Failed to save result');
   }
 }
 
