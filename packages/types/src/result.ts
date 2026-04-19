@@ -33,3 +33,31 @@ export interface ResultKeywordsProps {
   matched: string[];
   missing: string[];
 }
+
+// History types
+export interface HistoryItem {
+  id: number;
+  jobTitle: string | null;
+  candidateName: string | null;
+  overallScore: number;
+  skillsMatchScore: number;
+  experienceRelevanceScore: number;
+  educationScore: number;
+  matchedKeywords: string[];
+  missingKeywords: string[];
+  suggestions: {
+    section: string;
+    issue: string;
+    fix: string;
+  }[];
+  summary: string | null;
+  createdAt: string;
+}
+
+export interface HistoryResponse {
+  history: HistoryItem[];
+}
+
+export interface SingleResultResponse {
+  result: HistoryItem;
+}
