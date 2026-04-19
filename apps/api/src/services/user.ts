@@ -1,4 +1,5 @@
 import { db, usersTable, eq } from '@repo/db';
+import { InternalServerError } from '../utils/errors';
 
 export async function getUserByClerkId(clerkId: string) {
   try {
@@ -6,7 +7,9 @@ export async function getUserByClerkId(clerkId: string) {
       where: eq(usersTable.clerkId, clerkId),
     });
   } catch (error) {
+    if (error instanceof InternalServerError) throw error;
+    // eslint-disable-next-line no-console
     console.error('Failed to load user by clerk id:', error);
-    throw new Error('Failed to load user', { cause: error });
+    throw new InternalServerError('Failed to load user');
   }
 }

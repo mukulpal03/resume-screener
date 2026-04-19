@@ -9,12 +9,14 @@ import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
 import type { FormValues } from '@repo/types';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
+import { ApiError } from '../lib/api-error';
 import { useAuth } from '@clerk/nextjs';
+
 export default function ResumeUploadForm() {
   const [loading, setLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, getToken } = useAuth();
 
   const { handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -44,21 +46,32 @@ export default function ResumeUploadForm() {
     }
     if (!resumeFile) return;
 
+    let interval: NodeJS.Timeout | null = null;
+
     try {
       setLoading(true);
       setStepIndex(0);
 
-      const interval = setInterval(() => {
+      interval = setInterval(() => {
         setStepIndex((prev) => (prev < RESUME_UPLOAD_STEPS.length - 1 ? prev + 1 : prev));
       }, 1200);
 
-      const result = await uploadResume(resumeFile, jobDescription);
+      const token = await getToken();
+      const result = await uploadResume(resumeFile, token, jobDescription);
       sessionStorage.setItem('resumeResult', JSON.stringify(result));
 
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
       router.push('/results');
-    } catch {
-      toast.error('Failed to upload resume');
+    } catch (err) {
+      if (interval) clearInterval(interval);
+
+      if (err instanceof ApiError) {
+        toast.error(err.message);
+      } else {
+        toast.error('Failed to upload resume. Please try again.');
+        // eslint-disable-next-line no-console
+        console.error('Upload Error:', err);
+      }
     } finally {
       setLoading(false);
     }

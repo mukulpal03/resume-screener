@@ -1,18 +1,15 @@
-export async function uploadResume(file: File, jobDescription?: string) {
+import { fetchFromApi } from '../lib/api';
+
+export async function uploadResume(file: File, token: string | null, jobDescription?: string) {
   const formData = new FormData();
 
   formData.append('resume', file);
 
   if (jobDescription) formData.append('jobDescription', jobDescription);
 
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume/upload`, {
+  return fetchFromApi('/resume/upload', {
     method: 'POST',
     body: formData,
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
   });
-
-  if (!response.ok) {
-    throw new Error('Resume upload failed');
-  }
-
-  return response.json();
 }

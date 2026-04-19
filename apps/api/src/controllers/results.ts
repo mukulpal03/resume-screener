@@ -2,6 +2,8 @@ import { getAuth } from '@clerk/express';
 import { Request, Response } from 'express';
 import { getUserByClerkId } from '../services/user';
 import { fetchResultByIdForUser, fetchResultsHistoryForUser } from '../services/results';
+import { asyncHandler } from '../utils/asyncHandler';
+import { BadRequestError, NotFoundError, UnauthorizedError } from '../utils/errors';
 
 function parsePositiveIntegerParam(value: string | string[] | undefined): number | null {
   const raw = Array.isArray(value) ? value[0] : value;
@@ -12,61 +14,41 @@ function parsePositiveIntegerParam(value: string | string[] | undefined): number
   return n > 0 ? n : null;
 }
 
-async function resolveAuthedDbUser(req: Request, res: Response) {
+async function resolveAuthedDbUser(req: Request) {
   const { userId: clerkId } = getAuth(req);
 
   if (!clerkId) {
-    res.status(401).json({ error: 'Unauthorized' });
-    return null;
+    throw new UnauthorizedError();
   }
 
   const user = await getUserByClerkId(clerkId);
 
   if (!user) {
-    res.status(404).json({ error: 'User not found' });
-    return null;
+    throw new NotFoundError('User not found');
   }
 
   return user;
 }
 
-export const getResultsHistory = async (req: Request, res: Response) => {
-  try {
-    const user = await resolveAuthedDbUser(req, res);
-    if (!user) {
-      return;
-    }
+export const getResultsHistory = asyncHandler(async (req: Request, res: Response) => {
+  const user = await resolveAuthedDbUser(req);
+  const history = await fetchResultsHistoryForUser(user.id);
 
-    const history = await fetchResultsHistoryForUser(user.id);
+  return res.status(200).json({ history });
+});
 
-    return res.status(200).json({ history });
-  } catch (error) {
-    console.error('Error fetching results history:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+export const getResultById = asyncHandler(async (req: Request, res: Response) => {
+  const resultId = parsePositiveIntegerParam(req.params.id);
+  if (resultId === null) {
+    throw new BadRequestError('Invalid result id');
   }
-};
 
-export const getResultById = async (req: Request, res: Response) => {
-  try {
-    const resultId = parsePositiveIntegerParam(req.params.id);
-    if (resultId === null) {
-      return res.status(400).json({ error: 'Invalid result id' });
-    }
+  const user = await resolveAuthedDbUser(req);
+  const result = await fetchResultByIdForUser(user.id, resultId);
 
-    const user = await resolveAuthedDbUser(req, res);
-    if (!user) {
-      return;
-    }
-
-    const result = await fetchResultByIdForUser(user.id, resultId);
-
-    if (!result) {
-      return res.status(404).json({ error: 'Result not found' });
-    }
-
-    return res.status(200).json({ result });
-  } catch (error) {
-    console.error('Error fetching result by id:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+  if (!result) {
+    throw new NotFoundError('Result not found');
   }
-};
+
+  return res.status(200).json({ result });
+});
