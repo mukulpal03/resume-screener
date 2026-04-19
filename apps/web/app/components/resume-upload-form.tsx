@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { UploadResumeCard, JDTextarea, AppButton, Text, cn } from '@repo/ui';
-import { uploadResume } from '../services/resume.service';
+import { useResumeService } from '../services/resume.service';
 import { validateResumeFlow } from '../lib/resume-validation';
 import { toast } from '@repo/ui';
 import { useRouter } from 'next/navigation';
@@ -17,6 +17,7 @@ export default function ResumeUploadForm() {
   const [stepIndex, setStepIndex] = useState(0);
   const router = useRouter();
   const { isSignedIn } = useAuth();
+  const { uploadResume } = useResumeService();
 
   const { handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -44,26 +45,41 @@ export default function ResumeUploadForm() {
       toast.error(error);
       return;
     }
-    if (!resumeFile) return;
 
-    let interval: NodeJS.Timeout | null = null;
+    if (!resumeFile) return;
 
     try {
       setLoading(true);
       setStepIndex(0);
 
-      interval = setInterval(() => {
-        setStepIndex((prev) => (prev < RESUME_UPLOAD_STEPS.length - 1 ? prev + 1 : prev));
-      }, 1200);
+      let currentStep = 0;
 
+      // 🔥 Controlled progress (never finishes early)
+      const progressInterval = setInterval(() => {
+        if (currentStep < RESUME_UPLOAD_STEPS.length - 2) {
+          currentStep++;
+          setStepIndex(currentStep);
+        }
+      }, 800);
+
+      // 🔥 Call API (NO TOKEN NOW)
       const result = await uploadResume(resumeFile, jobDescription);
-      sessionStorage.setItem('resumeResult', JSON.stringify(result));
 
-      if (interval) clearInterval(interval);
-      router.push('/results');
+      // 🔥 Stop progress
+      clearInterval(progressInterval);
+
+      // 🔥 Move to final step ONLY after backend completes
+      setStepIndex(RESUME_UPLOAD_STEPS.length - 1);
+
+      // 🔥 Save result
+      sessionStorage.setItem('resumeResult', JSON.stringify(result.result));
+
+      // 🔥 Smooth UX delay (important)
+      await new Promise((res) => setTimeout(res, 500));
+
+      // 🔥 Correct redirect
+      router.push(`/results/${result.resultId}`);
     } catch (err) {
-      if (interval) clearInterval(interval);
-
       if (err instanceof ApiError) {
         toast.error(err.message);
       } else {
@@ -76,9 +92,7 @@ export default function ResumeUploadForm() {
   };
 
   const isLastStep = stepIndex === RESUME_UPLOAD_STEPS.length - 1;
-  const progressPercent = isLastStep
-    ? 95
-    : Math.round(((stepIndex + 1) / RESUME_UPLOAD_STEPS.length) * 100);
+  const progressPercent = Math.round(((stepIndex + 1) / RESUME_UPLOAD_STEPS.length) * 100);
 
   return (
     <>
@@ -109,8 +123,7 @@ export default function ResumeUploadForm() {
               {RESUME_UPLOAD_STEPS.map((step, i) => {
                 const isDone = i < stepIndex;
                 const isActive = i === stepIndex;
-                const isWaiting = isActive && isLastStep;
-
+                const isWaiting = loading && isActive && isLastStep;
                 return (
                   <div
                     key={i}

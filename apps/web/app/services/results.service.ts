@@ -1,10 +1,19 @@
-import { fetchFromApi } from '../lib/api';
 import type { HistoryResponse, SingleResultResponse } from '@repo/types';
+import { useApi } from '../lib/api';
 
-export async function fetchResultsHistory(): Promise<HistoryResponse> {
-  return fetchFromApi<HistoryResponse>('/results/history');
-}
+export function useResultsService() {
+  const { fetchFromApi } = useApi();
 
-export async function fetchResultById(id: string): Promise<SingleResultResponse> {
-  return fetchFromApi<SingleResultResponse>(`/results/${id}`);
+  const fetchResultsHistory = () => {
+    return fetchFromApi<HistoryResponse>('/results/history');
+  };
+
+  const fetchResultById = (id: string) => {
+    return fetchFromApi<SingleResultResponse>(`/results/${id}`);
+  };
+
+  return {
+    fetchResultsHistory,
+    fetchResultById,
+  };
 }

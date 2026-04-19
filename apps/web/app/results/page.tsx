@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Text, SectionHeader } from '@repo/ui';
 import type { HistoryItem, HistoryResponse } from '@repo/types';
-import { fetchResultsHistory } from '../services/results.service';
+import { useResultsService } from '../services/results.service';
 
 // const serifStyle = { fontFamily: 'var(--font-playfair)' };
 
@@ -123,12 +123,22 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const { fetchResultsHistory } = useResultsService();
 
   useEffect(() => {
-    fetchResultsHistory()
-      .then(setData)
-      .catch(() => setError('Failed to load history'))
-      .finally(() => setLoading(false));
+    const loadHistory = async () => {
+      try {
+        const res = await fetchResultsHistory();
+        setData(res);
+      } catch (err) {
+        setError('Failed to load history');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadHistory();
   }, []);
 
   return (

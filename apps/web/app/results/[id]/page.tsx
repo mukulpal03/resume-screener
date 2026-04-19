@@ -10,7 +10,7 @@ import {
   Text,
 } from '@repo/ui';
 import type { SingleResultResponse, ResumeResult } from '@repo/types';
-import { fetchResultById } from '../../services/results.service';
+import { useResultsService } from '../../services/results.service';
 
 const serifStyle = { fontFamily: 'var(--font-playfair)' };
 
@@ -30,13 +30,23 @@ export default function ResultDetailPage() {
   const [data, setData] = useState<SingleResultResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { fetchResultById } = useResultsService();
 
   useEffect(() => {
     if (!id) return;
-    fetchResultById(id)
-      .then(setData)
-      .catch(() => setError('Failed to load result'))
-      .finally(() => setLoading(false));
+    const loadResult = async () => {
+      try {
+        const res = await fetchResultById(id);
+        setData(res);
+      } catch (err) {
+        setError('Failed to load result');
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResult();
   }, [id]);
 
   if (loading) {

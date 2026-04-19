@@ -1,14 +1,22 @@
-import { fetchFromApi } from '../lib/api';
+import { useApi } from '../lib/api';
 
-export async function uploadResume(file: File, jobDescription?: string) {
-  const formData = new FormData();
+export function useResumeService() {
+  const { fetchFromApi } = useApi();
 
-  formData.append('resume', file);
+  const uploadResume = async (file: File, jobDescription?: string) => {
+    const formData = new FormData();
 
-  if (jobDescription) formData.append('jobDescription', jobDescription);
+    formData.append('resume', file);
 
-  return fetchFromApi('/resume/upload', {
-    method: 'POST',
-    body: formData,
-  });
+    if (jobDescription) {
+      formData.append('jobDescription', jobDescription);
+    }
+
+    return fetchFromApi('/resume/upload', {
+      method: 'POST',
+      body: formData,
+    });
+  };
+
+  return { uploadResume };
 }
