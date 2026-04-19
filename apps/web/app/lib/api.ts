@@ -1,17 +1,12 @@
-import { auth } from '@clerk/nextjs/server';
 import { ApiError } from './api-error';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchFromApi<T = any>(endpoint: string, init: RequestInit = {}): Promise<T> {
-  const { getToken } = await auth();
-  const token = await getToken();
-
   const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${endpoint}`, {
     ...init,
     headers: {
       ...(init.body instanceof FormData ? {} : { 'Content-Type': 'application/json' }),
       ...(init.headers ?? {}),
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
 

@@ -16,7 +16,7 @@ export default function ResumeUploadForm() {
   const [loading, setLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const router = useRouter();
-  const { isSignedIn } = useAuth();
+  const { isSignedIn, getToken } = useAuth();
 
   const { handleSubmit, setValue, watch } = useForm<FormValues>({
     defaultValues: {
@@ -56,7 +56,8 @@ export default function ResumeUploadForm() {
         setStepIndex((prev) => (prev < RESUME_UPLOAD_STEPS.length - 1 ? prev + 1 : prev));
       }, 1200);
 
-      const result = await uploadResume(resumeFile, jobDescription);
+      const token = await getToken();
+      const result = await uploadResume(resumeFile, token, jobDescription);
       sessionStorage.setItem('resumeResult', JSON.stringify(result));
 
       if (interval) clearInterval(interval);
@@ -68,6 +69,7 @@ export default function ResumeUploadForm() {
         toast.error(err.message);
       } else {
         toast.error('Failed to upload resume. Please try again.');
+        // eslint-disable-next-line no-console
         console.error('Upload Error:', err);
       }
     } finally {
