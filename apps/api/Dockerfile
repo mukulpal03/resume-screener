@@ -47,4 +47,4 @@ EXPOSE 8080
 
 RUN find /app -name "server.js" 2>/dev/null || echo "server.js NOT FOUND ANYWHERE"
 
-CMD ["node", "dist/server.js"]
+CMD ["npm", "run", "start"]
