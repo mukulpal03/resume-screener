@@ -1,5 +1,5 @@
 import { parseScoreResponse, validateScoreResponse } from '../validation/llmResponse';
-import { model } from '../lib/llm';
+import { llm } from '../lib/llm';
 import { ResumeResult } from '@repo/types';
 import { db, resultsTable, Suggestion } from '@repo/db';
 import { InternalServerError, UnprocessableEntityError } from '../utils/errors';
@@ -8,8 +8,7 @@ async function analyzeResume(resumeText: string, jdText: string): Promise<Resume
   try {
     const userPrompt = `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}\n\nEvaluate and return JSON.`;
 
-    const result = await model.generateContent(userPrompt);
-    const raw = result.response.text();
+    const raw = await llm.generateContent(userPrompt);
     const parsed = parseScoreResponse(raw);
 
     validateScoreResponse(parsed);
