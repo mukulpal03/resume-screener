@@ -3,7 +3,6 @@
 import { ApiError } from './api-error';
 import { useAuth } from '@clerk/nextjs';
 
-// ❗ custom hook wrapper
 export function useApi() {
   const { getToken } = useAuth();
 
