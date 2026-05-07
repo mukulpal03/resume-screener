@@ -67,20 +67,16 @@ export function useResume() {
       // Store result temporarily if needed (old code did this)
       sessionStorage.setItem('resumeResult', JSON.stringify(result.result));
 
-      // Small delay for UX
-      await new Promise((res) => setTimeout(res, 500));
-
       router.push(`/results/${result.resultId}`);
     } catch (err) {
       cleanup();
+      setLoading(false);
       if (err instanceof ApiError) {
         toast.error(err.message);
       } else {
         toast.error('Failed to upload resume. Please try again.');
         console.error('Upload Error:', err);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
