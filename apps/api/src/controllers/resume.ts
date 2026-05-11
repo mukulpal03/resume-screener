@@ -1,10 +1,15 @@
 import { Request, Response } from 'express';
 import extractText from '../utils/extractFileContent';
-import { analyzeResume, saveResult } from '../services/resume';
+import { analyzeResume, getUserMonthlyAnalysisCount, saveResult } from '../services/resume';
 import { getAuth } from '@clerk/express';
 import { getUserByClerkId } from '../services/user';
 import { asyncHandler } from '../utils/asyncHandler';
-import { BadRequestError, NotFoundError, UnauthorizedError } from '../utils/errors';
+import {
+  BadRequestError,
+  NotFoundError,
+  TooManyRequestsError,
+  UnauthorizedError,
+} from '../utils/errors';
 
 export const resumeHandler = asyncHandler(async (req: Request, res: Response) => {
   const { userId: clerkId } = getAuth(req);
@@ -32,6 +37,15 @@ export const resumeHandler = asyncHandler(async (req: Request, res: Response) =>
   }
 
   const { jobDescription } = req.body;
+
+  const usageCount = await getUserMonthlyAnalysisCount(user.id);
+  const MAX_MONTHLY_FREE = 5;
+
+  if (usageCount >= MAX_MONTHLY_FREE) {
+    throw new TooManyRequestsError(
+      `Monthly analysis quota reached (${usageCount}/${MAX_MONTHLY_FREE}). Upgrade your plan for more analyses.`
+    );
+  }
 
   const result = await analyzeResume(text, jobDescription);
 
