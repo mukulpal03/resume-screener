@@ -26,12 +26,17 @@ export function parseScoreResponse(rawContent: string) {
 }
 
 export function validateScoreResponse(data: unknown) {
-  try {
-    return llmOutputSchema.parse(data);
-  } catch (error) {
-    if (error instanceof Error) {
-      throw new Error(`Validation failed: ${error.message}`);
-    }
-    throw new Error('Validation failed with an unknown error');
+  const result = llmOutputSchema.safeParse(data);
+  if (result.success) {
+    return result.data;
   }
+
+  const issues = result.error.issues
+    .map((i) => {
+      const path = i.path.length > 0 ? `At ${i.path.join('.')}: ` : '';
+      return `- ${path}${i.message}`;
+    })
+    .join('\n');
+
+  throw new Error(issues);
 }

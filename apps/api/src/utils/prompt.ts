@@ -1,3 +1,24 @@
+export const schemaTemplate = `{
+  "job_title": <string, extracted from JD — e.g. "Senior Backend Engineer">,
+  "candidate_name": <string, extracted from resume — e.g. "Rahul Sharma", or "Unknown" if not found>,
+  "overall_score": <number 0-100>,
+  "breakdown": {
+    "skills_match": <number 0-100>,
+    "experience_relevance": <number 0-100>,
+    "education": <number 0-100>
+  },
+  "matched_keywords": [<string>],
+  "missing_keywords": [<string>],
+  "suggestions": [
+    {
+      "section": <"Summary" | "Experience" | "Skills" | "Projects" | "Education">,
+      "issue": <specific problem found>,
+      "fix": <exact actionable fix>
+    }
+  ],
+  "summary": <2-3 sentence overall assessment>
+}`;
+
 export const systemPrompt = `
 You are an expert technical recruiter and career coach with 10+ years of experience 
 evaluating software engineering resumes.
@@ -17,24 +38,5 @@ Return ONLY a valid JSON object. No explanation, no markdown, no backticks.
 Raw JSON only, starting with { and ending with }.
 
 SCHEMA:
-{
-  "job_title": <string, extracted from JD — e.g. "Senior Backend Engineer">,
-  "candidate_name": <string, extracted from resume — e.g. "Rahul Sharma", or "Unknown" if not found>,
-  "overall_score": <number 0-100>,
-  "breakdown": {
-    "skills_match": <number 0-100>,
-    "experience_relevance": <number 0-100>,
-    "education": <number 0-100>
-  },
-  "matched_keywords": [<string>],
-  "missing_keywords": [<string>],
-  "suggestions": [
-    {
-      "section": <"Summary" | "Experience" | "Skills" | "Projects" | "Education">,
-      "issue": <specific problem found>,
-      "fix": <exact actionable fix>
-    }
-  ],
-  "summary": <2-3 sentence overall assessment>
-}
+${schemaTemplate}
 `;
