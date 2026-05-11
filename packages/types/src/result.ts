@@ -8,19 +8,23 @@ export interface ResultBreakdownProps {
   breakdown: Breakdown;
 }
 
+export type ResumeSection = 'Summary' | 'Experience' | 'Skills' | 'Projects' | 'Education';
+
+export interface ResumeSuggestion {
+  section: ResumeSection;
+  issue: string;
+  fix: string;
+}
+
 export interface ResumeResult {
-  job_title?: string;
-  candidate_name?: string;
+  job_title: string;
+  candidate_name: string;
   overall_score: number;
   breakdown: Breakdown;
   matched_keywords: string[];
   missing_keywords: string[];
-  suggestions: {
-    section: string;
-    issue: string;
-    fix: string;
-  }[];
-  summary?: string;
+  suggestions: ResumeSuggestion[];
+  summary: string;
 }
 
 export type ResumeResponse = {
@@ -37,20 +41,16 @@ export interface ResultKeywordsProps {
 // History types
 export interface HistoryItem {
   id: number;
-  jobTitle: string | null;
-  candidateName: string | null;
+  jobTitle: string;
+  candidateName: string;
   overallScore: number;
   skillsMatchScore: number;
   experienceRelevanceScore: number;
   educationScore: number;
   matchedKeywords: string[];
   missingKeywords: string[];
-  suggestions: {
-    section: string;
-    issue: string;
-    fix: string;
-  }[];
-  summary: string | null;
+  suggestions: ResumeSuggestion[];
+  summary: string;
   createdAt: string;
 }
 

@@ -1,3 +1,5 @@
+import { llmOutputSchema } from '@repo/validation';
+
 export function parseScoreResponse(rawContent: string) {
   let text = rawContent.trim();
 
@@ -23,23 +25,13 @@ export function parseScoreResponse(rawContent: string) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function validateScoreResponse(data: any) {
-  const errors = [];
-
-  if (typeof data.overall_score !== 'number' || data.overall_score < 0 || data.overall_score > 100)
-    errors.push('invalid overall_score');
-
-  const breakdown = data.breakdown || {};
-  for (const key of ['skills_match', 'experience_relevance', 'education']) {
-    if (typeof breakdown[key] !== 'number') errors.push(`invalid breakdown.${key}`);
+export function validateScoreResponse(data: unknown) {
+  try {
+    return llmOutputSchema.parse(data);
+  } catch (error) {
+    if (error instanceof Error) {
+      throw new Error(`Validation failed: ${error.message}`);
+    }
+    throw new Error('Validation failed with an unknown error');
   }
-
-  if (!Array.isArray(data.matched_keywords)) errors.push('matched_keywords must be array');
-  if (!Array.isArray(data.missing_keywords)) errors.push('missing_keywords must be array');
-  if (!Array.isArray(data.suggestions)) errors.push('suggestions must be array');
-
-  if (errors.length > 0) throw new Error(`Validation failed: ${errors.join(', ')}`);
-
-  return true;
 }

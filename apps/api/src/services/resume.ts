@@ -11,9 +11,9 @@ async function analyzeResume(resumeText: string, jdText: string): Promise<Resume
     const raw = await llm.generateContent(userPrompt);
     const parsed = parseScoreResponse(raw);
 
-    validateScoreResponse(parsed);
+    const validated = validateScoreResponse(parsed);
 
-    return parsed;
+    return validated;
   } catch (error) {
     if (error instanceof UnprocessableEntityError) throw error;
 
@@ -40,22 +40,24 @@ async function saveResult(
   jobDescription: string
 ) {
   try {
+    const validated = validateScoreResponse(result);
+
     const rows = await db
       .insert(resultsTable)
       .values({
         userId: userId,
-        jobTitle: result.job_title || '',
-        candidateName: result.candidate_name || '',
+        jobTitle: validated.job_title,
+        candidateName: validated.candidate_name,
         jobDescription: jobDescription,
         resumeText: resumeText,
-        overallScore: result.overall_score,
-        skillsMatchScore: result.breakdown.skills_match,
-        experienceRelevanceScore: result.breakdown.experience_relevance,
-        educationScore: result.breakdown.education,
-        matchedKeywords: result.matched_keywords,
-        missingKeywords: result.missing_keywords,
-        suggestions: result.suggestions as Suggestion[],
-        summary: result.summary ?? '',
+        overallScore: validated.overall_score,
+        skillsMatchScore: validated.breakdown.skills_match,
+        experienceRelevanceScore: validated.breakdown.experience_relevance,
+        educationScore: validated.breakdown.education,
+        matchedKeywords: validated.matched_keywords,
+        missingKeywords: validated.missing_keywords,
+        suggestions: validated.suggestions as Suggestion[],
+        summary: validated.summary,
       })
       .returning();
 
