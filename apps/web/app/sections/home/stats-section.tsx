@@ -1,4 +1,4 @@
-import { Text } from '@repo/ui';
+import Text from '../../components/typography/text';
 import { STATS } from '../../constants/home';
 
 const serifStyle = { fontFamily: 'var(--font-serif)' };

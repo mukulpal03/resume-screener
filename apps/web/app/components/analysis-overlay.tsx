@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Text, cn } from '@repo/ui';
+import Text from './typography/text';
+import { cn } from '../lib/utils';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
 
 interface AnalysisOverlayProps {
@@ -12,10 +13,23 @@ interface AnalysisOverlayProps {
 
 export function AnalysisOverlay({ loading, stepIndex }: AnalysisOverlayProps) {
   const [mounted, setMounted] = useState(false);
+  const [showRefining, setShowRefining] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    if (loading && stepIndex === RESUME_UPLOAD_STEPS.length - 1) {
+      timeout = setTimeout(() => {
+        setShowRefining(true);
+      }, 8000);
+    } else {
+      setShowRefining(false);
+    }
+    return () => clearTimeout(timeout);
+  }, [loading, stepIndex]);
 
   if (!loading || !mounted) return null;
 
@@ -228,7 +242,9 @@ export function AnalysisOverlay({ loading, stepIndex }: AnalysisOverlayProps) {
                     animate={{ opacity: [0.4, 1, 0.4] }}
                     transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
                   >
-                    Finalizing results...
+                    {showRefining
+                      ? 'AI is refining the analysis for better accuracy...'
+                      : 'Finalizing results...'}
                   </motion.span>
                 ) : (
                   `Step ${stepIndex + 1} of ${RESUME_UPLOAD_STEPS.length}`

@@ -1,4 +1,4 @@
-import { Text } from '@repo/ui';
+import Text from '../../components/typography/text';
 import { MARQUEE_LOGOS } from '../../constants/home';
 
 export default function MarqueeSection() {

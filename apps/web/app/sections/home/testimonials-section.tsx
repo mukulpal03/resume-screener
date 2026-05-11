@@ -1,4 +1,6 @@
-import { SectionHeader, StarRating, Text } from '@repo/ui';
+import SectionHeader from '../../components/common/section-header';
+import StarRating from '../../components/common/star-rating';
+import Text from '../../components/typography/text';
 import { TESTIMONIALS } from '../../constants/home';
 
 export default function TestimonialsSection() {

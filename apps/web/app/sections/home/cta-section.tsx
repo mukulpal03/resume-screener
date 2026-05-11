@@ -1,6 +1,7 @@
 'use client';
 
-import { AppButton, Text } from '@repo/ui';
+import AppButton from '../../components/common/app-button';
+import Text from '../../components/typography/text';
 
 const serifStyle = { fontFamily: 'var(--font-serif)' };
 

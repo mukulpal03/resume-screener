@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Text, SectionHeader } from '@repo/ui';
+import Text from '../components/typography/text';
+import SectionHeader from '../components/common/section-header';
 import type { HistoryItem, HistoryResponse } from '@repo/types';
 import { useResultsService } from '../services/results.service';
 
@@ -71,27 +72,27 @@ function HistoryCard({ item, onClick }: { item: HistoryItem; onClick: () => void
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <Text size="base" weight="semibold" className="text-foreground truncate">
-            {item.jobTitle ?? 'Untitled Role'}
+            {item?.jobTitle}
           </Text>
         </div>
         <Text size="sm" className="text-muted-foreground truncate">
-          {item.candidateName ?? 'Unknown Candidate'}
+          {item?.candidateName}
         </Text>
 
         {/* Score breakdown chips */}
         <div className="flex items-center gap-2 mt-2.5 flex-wrap">
           <span className="inline-flex items-center gap-1 text-xs bg-[#ECFDF5] text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-lg">
-            Skills {item.skillsMatchScore}%
+            Skills {item?.skillsMatchScore}%
           </span>
           <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-1 rounded-lg">
-            Experience {item.experienceRelevanceScore}%
+            Experience {item?.experienceRelevanceScore}%
           </span>
           <span className="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 border border-purple-100 px-2.5 py-1 rounded-lg">
-            Education {item.educationScore}%
+            Education {item?.educationScore}%
           </span>
           {/* Keyword count */}
           <span className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-lg">
-            {item.matchedKeywords.length} keywords matched
+            {item?.matchedKeywords?.length} keywords matched
           </span>
         </div>
       </div>
@@ -99,10 +100,10 @@ function HistoryCard({ item, onClick }: { item: HistoryItem; onClick: () => void
       {/* Date + Arrow */}
       <div className="flex-shrink-0 flex flex-col items-end gap-2 ml-2">
         <Text size="xs" weight="medium" className="text-muted-foreground whitespace-nowrap">
-          {timeAgo(item.createdAt)}
+          {timeAgo(item?.createdAt)}
         </Text>
         <Text size="xs" className="text-muted-foreground/60 whitespace-nowrap">
-          {formatDate(item.createdAt)}
+          {formatDate(item?.createdAt)}
         </Text>
         <svg
           className="w-4 h-4 text-muted-foreground/40 group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-150 mt-1"

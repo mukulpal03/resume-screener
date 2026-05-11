@@ -1,12 +1,15 @@
 'use client';
 
 import { useForm } from 'react-hook-form';
-import { UploadResumeCard, JDTextarea, AppButton, Text } from '@repo/ui';
+import UploadResumeCard from './upload/upload-resume-card';
+import JDTextarea from './input/jd-textarea';
+import AppButton from './common/app-button';
+import Text from './typography/text';
 import type { FormValues } from '@repo/types';
 import { useResume } from '../hooks/use-resume';
 import { AnalysisOverlay } from './analysis-overlay';
 import { validateResumeFlow } from '../lib/resume-validation';
-import { toast } from '@repo/ui';
+import { toast } from 'sonner';
 
 export default function ResumeUploadForm() {
   const { loading, stepIndex, uploadAndAnalyze } = useResume();

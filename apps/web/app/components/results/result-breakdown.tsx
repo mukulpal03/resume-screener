@@ -1,5 +1,6 @@
-import { Card, CardContent, Progress } from '@repo/ui';
-import { Text } from '@repo/ui';
+import { Card, CardContent } from '../ui/card';
+import { Progress } from '../ui/progress';
+import Text from '../typography/text';
 import type { ResultBreakdownProps } from '@repo/types';
 
 const getScoreColor = (value: number) => {

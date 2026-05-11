@@ -1,14 +1,9 @@
-import { Card, CardContent } from '@repo/ui';
-import { Text } from '@repo/ui';
-
-interface Suggestion {
-  section: string;
-  issue: string;
-  fix: string;
-}
+import { Card, CardContent } from '../ui/card';
+import Text from '../typography/text';
+import type { ResumeSuggestion } from '@repo/types';
 
 interface Props {
-  suggestions: Suggestion[];
+  suggestions: ResumeSuggestion[];
 }
 
 export default function ResultSuggestions({ suggestions }: Props) {

@@ -31,7 +31,7 @@ export const resumeHandler = asyncHandler(async (req: Request, res: Response) =>
     throw new BadRequestError(message);
   }
 
-  const jobDescription = typeof req.body.jobDescription === 'string' ? req.body.jobDescription : '';
+  const { jobDescription } = req.body;
 
   const result = await analyzeResume(text, jobDescription);
 

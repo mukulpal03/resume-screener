@@ -6,5 +6,5 @@ export default defineConfig({
   target: 'node20',
   clean: true,
   bundle: true,
-  noExternal: ['@repo/db'],
+  noExternal: ['@repo/db', '@repo/types', '@repo/validation'],
 });
