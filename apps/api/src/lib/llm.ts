@@ -60,12 +60,12 @@ class GeminiProvider implements LLMProvider {
 }
 
 class OpenAISession implements LLMSession {
-  private openai: any;
+  private openai: OpenAI;
   private modelName: string;
   private conversationId: string;
   private isFirstMessage = true;
 
-  constructor(openai: any, modelName: string, conversationId: string) {
+  constructor(openai: OpenAI, modelName: string, conversationId: string) {
     this.openai = openai;
     this.modelName = modelName;
     this.conversationId = conversationId;
@@ -98,7 +98,7 @@ class OpenAISession implements LLMSession {
 }
 
 class OpenAIProvider implements LLMProvider {
-  private openai: any;
+  private openai: OpenAI;
   private modelName: string;
 
   constructor() {
