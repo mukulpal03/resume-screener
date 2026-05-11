@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@repo/ui';
-import { Text } from '@repo/ui';
+import { Card, CardContent } from '../ui/card';
+import Text from '../typography/text';
 
 interface Props {
   score: number;

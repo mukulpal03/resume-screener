@@ -2,13 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import {
-  ResultScoreCard,
-  ResultBreakdown,
-  ResultKeywords,
-  ResultSuggestions,
-  Text,
-} from '@repo/ui';
+import ResultScoreCard from '../../components/results/result-score-card';
+import ResultBreakdown from '../../components/results/result-breakdown';
+import ResultKeywords from '../../components/results/result-keywords';
+import ResultSuggestions from '../../components/results/result-suggestion';
+import Text from '../../components/typography/text';
 import type { SingleResultResponse, ResumeResult } from '@repo/types';
 import { useResultsService } from '../../services/results.service';
 
@@ -94,9 +92,9 @@ export default function ResultDetailPage() {
     matched_keywords: item.matchedKeywords,
     missing_keywords: item.missingKeywords,
     suggestions: item.suggestions,
-    summary: item.summary ?? undefined,
-    job_title: item.jobTitle ?? undefined,
-    candidate_name: item.candidateName ?? undefined,
+    summary: item.summary,
+    job_title: item.jobTitle,
+    candidate_name: item.candidateName,
   };
 
   return (

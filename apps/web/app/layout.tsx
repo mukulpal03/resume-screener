@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Poppins, Instrument_Serif, Geist, Playfair_Display } from 'next/font/google';
-import { Footer, Toaster } from '@repo/ui';
+import Footer from './components/layout/footer';
+import { Toaster } from './components/ui/sonner';
 import { ClerkProvider } from '@clerk/nextjs';
 import { NAV_LINKS } from './constants/nav';
 import WebNavbar from './components/web-navbar';

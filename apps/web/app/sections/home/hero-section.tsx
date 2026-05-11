@@ -1,6 +1,7 @@
 'use client';
 
-import { Text, Badge } from '@repo/ui';
+import Text from '../../components/typography/text';
+import Badge from '../../components/common/badge';
 import ResumeUploadForm from '../../components/resume-upload-form';
 import { HERO_TRUST_POINTS } from '../../constants/home';
 

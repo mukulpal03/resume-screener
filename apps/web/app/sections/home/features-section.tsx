@@ -1,4 +1,5 @@
-import { SectionHeader, Text } from '@repo/ui';
+import SectionHeader from '../../components/common/section-header';
+import Text from '../../components/typography/text';
 import { FEATURES, SCORE_BREAKDOWN } from '../../constants/home';
 
 export default function FeaturesSection() {

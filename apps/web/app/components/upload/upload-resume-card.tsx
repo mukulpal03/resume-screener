@@ -3,7 +3,9 @@
 import { useState, useRef } from 'react';
 import type { DragEvent, ChangeEvent } from 'react';
 import { UploadCloud, FileText, X, RefreshCw } from 'lucide-react';
-import { cn, Text, toast } from '@repo/ui';
+import { cn } from '../../lib/utils';
+import Text from '../typography/text';
+import { toast } from 'sonner';
 import type { UploadResumeCardProps } from '@repo/types';
 
 const ALLOWED_TYPES = [
