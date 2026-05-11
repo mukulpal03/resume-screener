@@ -3,34 +3,59 @@ import { llm } from '../lib/llm';
 import { ResumeResult } from '@repo/types';
 import { db, resultsTable, Suggestion } from '@repo/db';
 import { InternalServerError, UnprocessableEntityError } from '../utils/errors';
+import { schemaTemplate } from '../utils/prompt';
+
+const MAX_RETRIES = 2;
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 async function analyzeResume(resumeText: string, jdText: string): Promise<ResumeResult> {
-  try {
-    const userPrompt = `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}\n\nEvaluate and return JSON.`;
+  let attempts = 0;
+  let lastError = '';
+  const initialPrompt = `RESUME:\n${resumeText}\n\nJOB DESCRIPTION:\n${jdText}\n\nEvaluate and return JSON according to the schema.`;
 
-    const raw = await llm.generateContent(userPrompt);
-    const parsed = parseScoreResponse(raw);
+  const session = await llm.createSession();
+  let currentMessage = initialPrompt;
 
-    const validated = validateScoreResponse(parsed);
+  while (attempts <= MAX_RETRIES) {
+    try {
+      const raw = await session.sendMessage(currentMessage);
+      const parsed = parseScoreResponse(raw);
+      const validated = validateScoreResponse(parsed);
 
-    return validated;
-  } catch (error) {
-    if (error instanceof UnprocessableEntityError) throw error;
-
-    // eslint-disable-next-line no-console
-    console.error('Resume analysis failed:', error);
-    if (error instanceof Error) {
-      const { message } = error;
-      if (
-        message.startsWith('Validation failed') ||
-        message.startsWith('No JSON object found') ||
-        message.startsWith('Truncated or malformed JSON')
-      ) {
-        throw new UnprocessableEntityError(message);
+      if (attempts > 0) {
+        // eslint-disable-next-line no-console
+        console.info(`[LLM] Successfully recovered after ${attempts} retry/ies.`);
       }
+
+      return validated;
+    } catch (error) {
+      attempts++;
+      lastError = error instanceof Error ? error.message : 'Unknown error';
+
+      if (attempts > MAX_RETRIES) {
+        // eslint-disable-next-line no-console
+        console.error(
+          `[LLM] Analysis failed after ${MAX_RETRIES} retries. Final error: ${lastError}`
+        );
+        throw new UnprocessableEntityError(
+          'Failed to analyze resume. The AI output was inconsistent. Please try again.'
+        );
+      }
+
+      // eslint-disable-next-line no-console
+      console.warn(
+        `[LLM] Attempt ${attempts} failed: ${lastError}. Retrying in ${
+          attempts === 1 ? '1s' : '3s'
+        }...`
+      );
+
+      currentMessage = `IMPORTANT: Your previous response was invalid and failed validation.\nISSUES FOUND:\n${lastError}\n\nPlease fix these issues and return ONLY a valid JSON object matching this schema:\n${schemaTemplate}`;
+
+      await delay(attempts === 1 ? 1000 : 3000);
     }
-    throw new InternalServerError('Failed to analyze resume');
   }
+
+  throw new InternalServerError('Unexpected retry loop exit');
 }
 
 async function saveResult(
