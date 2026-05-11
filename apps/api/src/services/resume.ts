@@ -1,7 +1,7 @@
 import { parseScoreResponse, validateScoreResponse } from '../validation/llmResponse';
 import { llm } from '../lib/llm';
 import { ResumeResult } from '@repo/types';
-import { db, resultsTable, Suggestion } from '@repo/db';
+import { db, resultsTable, Suggestion, and, gte, sql, eq } from '@repo/db';
 import { InternalServerError, UnprocessableEntityError } from '../utils/errors';
 import { schemaTemplate } from '../utils/prompt';
 
@@ -101,4 +101,23 @@ async function saveResult(
   }
 }
 
-export { analyzeResume, saveResult };
+async function getUserMonthlyAnalysisCount(userId: number): Promise<number> {
+  try {
+    const startOfMonth = new Date();
+    startOfMonth.setDate(1);
+    startOfMonth.setHours(0, 0, 0, 0);
+
+    const result = await db
+      .select({ count: sql<number>`count(*)` })
+      .from(resultsTable)
+      .where(and(eq(resultsTable.userId, userId), gte(resultsTable.createdAt, startOfMonth)));
+
+    return Number(result[0]?.count || 0);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to get monthly analysis count:', error);
+    throw new InternalServerError('Failed to check usage quota');
+  }
+}
+
+export { analyzeResume, saveResult, getUserMonthlyAnalysisCount };
