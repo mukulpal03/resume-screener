@@ -2,7 +2,8 @@
 
 import { Textarea } from '../ui/textarea';
 import { FileText } from 'lucide-react';
-import { cn, Text } from '@repo/ui';
+import { cn } from '../../lib/utils';
+import Text from '../typography/text';
 import type { JDTextareaProps } from '@repo/types';
 
 export default function JDTextarea({

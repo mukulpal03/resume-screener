@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Text, cn } from '@repo/ui';
+import Text from './typography/text';
+import { cn } from '../lib/utils';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
 
 interface AnalysisOverlayProps {

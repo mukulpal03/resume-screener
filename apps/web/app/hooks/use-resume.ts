@@ -3,7 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
-import { toast } from '@repo/ui';
+import { toast } from 'sonner';
 import { useApi } from '../lib/api';
 import { ApiError } from '../lib/api-error';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';

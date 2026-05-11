@@ -1,5 +1,5 @@
-import { Card, CardContent } from '@repo/ui';
-import { Text } from '@repo/ui';
+import { Card, CardContent } from '../ui/card';
+import Text from '../typography/text';
 import type { ResultKeywordsProps } from '@repo/types';
 
 export default function ResultKeywords({ matched = [], missing = [] }: ResultKeywordsProps) {
