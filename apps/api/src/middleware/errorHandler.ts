@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { AppError } from '../utils/errors';
 
+import { env } from '../config/env';
+
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const errorHandler = (err: Error, req: Request, res: Response, _next: NextFunction) => {
   let statusCode = 500;
@@ -34,7 +36,7 @@ export const errorHandler = (err: Error, req: Request, res: Response, _next: Nex
   };
 
   // Add stack trace in development
-  if (process.env.NODE_ENV !== 'production') {
+  if (env.NODE_ENV !== 'production') {
     response.error.stack = err.stack;
   }
 

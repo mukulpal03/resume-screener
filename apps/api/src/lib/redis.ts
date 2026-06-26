@@ -1,6 +1,7 @@
 import Redis, { RedisOptions } from 'ioredis';
+import { env } from '../config/env';
 
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
+const REDIS_URL = env.REDIS_URL;
 
 function buildRedisOptions(): RedisOptions {
   const isTLS = REDIS_URL.startsWith('rediss://');

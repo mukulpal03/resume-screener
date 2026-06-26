@@ -1,7 +1,8 @@
 import { initChatModel } from 'langchain';
+import { env } from '../config/env';
 
 export const getModel = async (modelName?: string, options?: Record<string, unknown>) => {
-  const provider = process.env.LLM_PROVIDER?.toLowerCase() || 'openai';
+  const provider = env.LLM_PROVIDER;
 
   const defaultOptions = {
     temperature: 0,
@@ -10,12 +11,12 @@ export const getModel = async (modelName?: string, options?: Record<string, unkn
   };
 
   if (provider === 'gemini') {
-    return await initChatModel(modelName || process.env.GOOGLE_MODEL || 'gemini-2.5-flash', {
+    return await initChatModel(modelName || env.GOOGLE_MODEL, {
       modelProvider: 'google',
       ...defaultOptions,
     });
   } else {
-    return await initChatModel(modelName || process.env.OPENAI_MODEL || 'gpt-4o-mini', {
+    return await initChatModel(modelName || env.OPENAI_MODEL, {
       modelProvider: 'openai',
       ...defaultOptions,
     });
