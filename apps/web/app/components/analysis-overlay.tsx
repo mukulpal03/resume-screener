@@ -6,6 +6,32 @@ import Text from './typography/text';
 import { cn } from '../lib/utils';
 import { RESUME_UPLOAD_STEPS } from '../constants/resume';
 
+const STEP_SUB_MESSAGES: string[][] = [
+  ['Sending your file to the server...', 'Preparing for analysis...'],
+  ['Reading PDF structure...', 'Pulling out plain text...', 'Stripping formatting...'],
+  ['Parsing the job requirements...', 'Identifying key skills...', 'Understanding the role...'],
+  ['Scoring your experience...', 'Comparing keywords...', 'Checking skill overlap...'],
+  ['Drafting improvement tips...', 'Ranking suggestions...', 'Finalising your report...'],
+];
+
+function useSubMessage(stepIndex: number, loading: boolean) {
+  const [msgIndex, setMsgIndex] = useState(0);
+
+  useEffect(() => {
+    setMsgIndex(0);
+    if (!loading) return;
+    const messages = STEP_SUB_MESSAGES[stepIndex];
+    if (!messages || messages.length <= 1) return;
+
+    const id = setInterval(() => {
+      setMsgIndex((i) => (i + 1) % messages.length);
+    }, 2200);
+    return () => clearInterval(id);
+  }, [stepIndex, loading]);
+
+  return STEP_SUB_MESSAGES[stepIndex]?.[msgIndex] ?? '';
+}
+
 interface AnalysisOverlayProps {
   loading: boolean;
   stepIndex: number;
@@ -14,6 +40,7 @@ interface AnalysisOverlayProps {
 export function AnalysisOverlay({ loading, stepIndex }: AnalysisOverlayProps) {
   const [mounted, setMounted] = useState(false);
   const [showRefining, setShowRefining] = useState(false);
+  const subMessage = useSubMessage(stepIndex, loading);
 
   useEffect(() => {
     setMounted(true);
@@ -181,17 +208,34 @@ export function AnalysisOverlay({ loading, stepIndex }: AnalysisOverlayProps) {
                   </div>
 
                   {/* Step text */}
-                  <Text
-                    size="sm"
-                    className={cn(
-                      'text-left flex-1 transition-colors duration-300 relative z-10',
-                      isDone && 'text-primary/60 line-through decoration-primary/30',
-                      isActive && 'text-foreground font-medium',
-                      !isDone && !isActive && 'text-muted-foreground/40'
-                    )}
-                  >
-                    {step}
-                  </Text>
+                  <div className="flex flex-col flex-1 relative z-10 min-w-0">
+                    <Text
+                      size="sm"
+                      className={cn(
+                        'text-left transition-colors duration-300',
+                        isDone && 'text-primary/60 line-through decoration-primary/30',
+                        isActive && 'text-foreground font-medium',
+                        !isDone && !isActive && 'text-muted-foreground/40'
+                      )}
+                    >
+                      {step}
+                    </Text>
+                    {/* Rotating sub-message under the active step */}
+                    <AnimatePresence mode="wait">
+                      {isActive && loading && !isLastStep && (
+                        <motion.span
+                          key={subMessage}
+                          initial={{ opacity: 0, y: 4 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -4 }}
+                          transition={{ duration: 0.35 }}
+                          className="text-[11px] text-primary/60 font-normal mt-0.5 truncate"
+                        >
+                          {subMessage}
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </div>
 
                   {/* Waiting badge */}
                   <AnimatePresence>

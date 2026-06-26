@@ -61,3 +61,17 @@ export interface HistoryResponse {
 export interface SingleResultResponse {
   result: HistoryItem;
 }
+
+export type JobStatus = 'queued' | 'analyzing' | 'saving' | 'done' | 'failed';
+
+export interface JobStatusEvent {
+  status: JobStatus;
+  resultId?: number;
+  result?: ResumeResult;
+  error?: string;
+}
+
+export interface EnqueueResponse {
+  success: true;
+  jobId: string;
+}

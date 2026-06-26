@@ -1,4 +1,4 @@
-import type { HistoryResponse, SingleResultResponse } from '@repo/types';
+import type { HistoryResponse, SingleResultResponse, EnqueueResponse } from '@repo/types';
 import { useApi } from '../lib/api';
 
 export function useResultsService() {
@@ -12,8 +12,16 @@ export function useResultsService() {
     return fetchFromApi<SingleResultResponse>(`/results/${id}`);
   };
 
+  const enqueueAnalysis = (formData: FormData) => {
+    return fetchFromApi<EnqueueResponse>('/resume/analyze', {
+      method: 'POST',
+      body: formData,
+    });
+  };
+
   return {
     fetchResultsHistory,
     fetchResultById,
+    enqueueAnalysis,
   };
 }
