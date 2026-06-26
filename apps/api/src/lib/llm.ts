@@ -38,7 +38,7 @@ class GeminiProvider implements LLMProvider {
       model: 'gemini-2.5-flash',
       systemInstruction: systemPrompt,
       generationConfig: {
-        temperature: 0.2,
+        temperature: 0.0,
         maxOutputTokens: 8192,
         responseMimeType: 'application/json',
       },
@@ -91,6 +91,7 @@ class OpenAISession implements LLMSession {
       model: this.modelName,
       input,
       conversation: this.conversationId,
+      temperature: 0.0,
     });
 
     return (response as any).output_text || '';
