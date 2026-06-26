@@ -1,27 +1,128 @@
 'use client';
 
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@clerk/nextjs';
 import { toast } from 'sonner';
-import { useApi } from '../lib/api';
+import { useResultsService } from '../services/results.service';
 import { ApiError } from '../lib/api-error';
-import { RESUME_UPLOAD_STEPS } from '../constants/resume';
+
+// Minimum ms each step must stay visible before the next one can show.
+const MIN_STEP_MS = 700;
 
 export function useResume() {
   const [loading, setLoading] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
-  const { fetchFromApi } = useApi();
-  const { isSignedIn } = useAuth();
+  const { enqueueAnalysis } = useResultsService();
+  const { isSignedIn, getToken } = useAuth();
   const router = useRouter();
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const activeReaderRef = useRef<ReadableStreamDefaultReader<Uint8Array> | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
+
+  const stepQueueRef = useRef<number[]>([]);
+  const stepDrainTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const lastStepTimeRef = useRef<number>(0);
+  const currentStepRef = useRef<number>(0);
+  const navTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const analyzingStartRef = useRef<number>(0);
+  const step3TransitionTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const highestEnqueuedRef = useRef<number>(0);
+
+  const drainStepQueue = useCallback(() => {
+    if (stepQueueRef.current.length === 0) {
+      stepDrainTimerRef.current = null;
+      return;
+    }
+
+    const next = stepQueueRef.current.shift()!;
+    const elapsed = Date.now() - lastStepTimeRef.current;
+    const delay = Math.max(0, MIN_STEP_MS - elapsed);
+
+    stepDrainTimerRef.current = setTimeout(() => {
+      currentStepRef.current = next;
+      setStepIndex(next);
+      lastStepTimeRef.current = Date.now();
+
+      if (next === 3) {
+        if (step3TransitionTimerRef.current) clearTimeout(step3TransitionTimerRef.current);
+        step3TransitionTimerRef.current = setTimeout(() => {
+          enqueueStepRef.current(4);
+        }, 3500);
+      }
+
+      if (next >= 4) {
+        if (step3TransitionTimerRef.current) {
+          clearTimeout(step3TransitionTimerRef.current);
+          step3TransitionTimerRef.current = null;
+        }
+      }
+
+      drainStepQueue();
+    }, delay);
+  }, []);
+
+  const enqueueStep = useCallback(
+    (step: number) => {
+      if (step <= highestEnqueuedRef.current) return;
+      highestEnqueuedRef.current = step;
+
+      stepQueueRef.current.push(step);
+      if (!stepDrainTimerRef.current) {
+        drainStepQueue();
+      }
+    },
+    [drainStepQueue]
+  );
+
+  const enqueueStepRef = useRef<(step: number) => void>(enqueueStep);
+  enqueueStepRef.current = enqueueStep;
+
+  const scheduleNav = useCallback(
+    (path: string, extraDelay = 0) => {
+      if (navTimerRef.current) clearTimeout(navTimerRef.current);
+
+      const pendingSteps = stepQueueRef.current.length;
+      const elapsedOnCurrentStep = Date.now() - lastStepTimeRef.current;
+      const remainingOnCurrent = Math.max(0, MIN_STEP_MS - elapsedOnCurrentStep);
+      const totalDelay = remainingOnCurrent + pendingSteps * MIN_STEP_MS + extraDelay + 200;
+
+      navTimerRef.current = setTimeout(() => {
+        router.push(path);
+      }, totalDelay);
+    },
+    [router]
+  );
 
   const cleanup = useCallback(() => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
+    if (activeReaderRef.current) {
+      activeReaderRef.current.cancel().catch(() => {});
+      activeReaderRef.current = null;
     }
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+    if (stepDrainTimerRef.current) {
+      clearTimeout(stepDrainTimerRef.current);
+      stepDrainTimerRef.current = null;
+    }
+    if (navTimerRef.current) {
+      clearTimeout(navTimerRef.current);
+      navTimerRef.current = null;
+    }
+    if (step3TransitionTimerRef.current) {
+      clearTimeout(step3TransitionTimerRef.current);
+      step3TransitionTimerRef.current = null;
+    }
+    stepQueueRef.current = [];
   }, []);
+
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, [cleanup]);
 
   const uploadAndAnalyze = async (file: File | null, jobDescription: string) => {
     if (!isSignedIn) {
@@ -37,16 +138,14 @@ export function useResume() {
 
     try {
       setLoading(true);
+      currentStepRef.current = 0;
+      highestEnqueuedRef.current = 0;
+      lastStepTimeRef.current = Date.now();
       setStepIndex(0);
-
-      // Start simulated progress
-      let currentStep = 0;
-      intervalRef.current = setInterval(() => {
-        if (currentStep < RESUME_UPLOAD_STEPS.length - 1) {
-          currentStep++;
-          setStepIndex(currentStep);
-        }
-      }, 800);
+      if (step3TransitionTimerRef.current) {
+        clearTimeout(step3TransitionTimerRef.current);
+        step3TransitionTimerRef.current = null;
+      }
 
       const formData = new FormData();
       formData.append('resume', file);
@@ -54,35 +153,81 @@ export function useResume() {
         formData.append('jobDescription', jobDescription);
       }
 
-      const result = await fetchFromApi('/resume/upload', {
-        method: 'POST',
-        body: formData,
+      const { jobId } = await enqueueAnalysis(formData);
+
+      const token = await getToken();
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/resume/status/${jobId}`, {
+        headers: { ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+        signal: abortController.signal,
       });
 
-      cleanup();
+      if (!response.ok) throw new Error('Connection to analysis status stream failed');
 
-      // Move to final step
-      setStepIndex(RESUME_UPLOAD_STEPS.length - 1);
+      const reader = response.body?.getReader();
+      if (!reader) throw new Error('Response body stream reader not available');
+      activeReaderRef.current = reader;
 
-      // Store result temporarily if needed (old code did this)
-      sessionStorage.setItem('resumeResult', JSON.stringify(result.result));
+      const decoder = new TextDecoder();
+      let buffer = '';
 
-      router.push(`/results/${result.resultId}`);
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split('\n\n');
+        buffer = parts.pop() || '';
+
+        for (const part of parts) {
+          if (!part.startsWith('data: ')) continue;
+          const dataStr = part.slice(6).trim();
+          if (!dataStr) continue;
+
+          let event;
+          try {
+            event = JSON.parse(dataStr);
+          } catch {
+            continue;
+          }
+
+          const { status, resultId, error } = event;
+
+          if (status === 'queued') {
+            enqueueStep(1);
+          } else if (status === 'analyzing') {
+            analyzingStartRef.current = Date.now();
+            enqueueStep(2);
+            enqueueStep(3);
+          } else if (status === 'saving') {
+            enqueueStep(4);
+          } else if (status === 'done') {
+            enqueueStep(4);
+            scheduleNav(`/results/${resultId}`);
+            return;
+          } else if (status === 'failed') {
+            cleanup();
+            throw new Error(error || 'Analysis job failed');
+          }
+        }
+      }
+
+      throw new Error('Analysis connection closed unexpectedly');
     } catch (err) {
       cleanup();
       setLoading(false);
       if (err instanceof ApiError) {
         toast.error(err.message);
       } else {
-        toast.error('Failed to upload resume. Please try again.');
-        console.error('Upload Error:', err);
+        toast.error(
+          err instanceof Error ? err.message : 'Failed to analyze resume. Please try again.'
+        );
+        console.error('Analysis Error:', err);
       }
     }
   };
 
-  return {
-    loading,
-    stepIndex,
-    uploadAndAnalyze,
-  };
+  return { loading, stepIndex, uploadAndAnalyze };
 }

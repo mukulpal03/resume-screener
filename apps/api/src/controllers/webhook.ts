@@ -5,6 +5,8 @@ import { db, eq, usersTable } from '@repo/db';
 import { asyncHandler } from '../utils/asyncHandler';
 import { BadRequestError, InternalServerError } from '../utils/errors';
 
+import { env } from '../config/env';
+
 export const clerkWebhookController = asyncHandler(async (req: Request, res: Response) => {
   // eslint-disable-next-line no-console
   console.log('\n--- [Webhook] Incoming Request ---');
@@ -18,13 +20,7 @@ export const clerkWebhookController = asyncHandler(async (req: Request, res: Res
     'svix-signature': req.header('svix-signature'),
   } as const;
 
-  const webhookSecret = process.env.CLERK_WEBHOOK_SECRET;
-  if (!webhookSecret) {
-    // eslint-disable-next-line no-console
-    console.error('[Webhook] ERROR: CLERK_WEBHOOK_SECRET is not defined in environment variables');
-    throw new InternalServerError('CLERK_WEBHOOK_SECRET is not defined');
-  }
-
+  const webhookSecret = env.CLERK_WEBHOOK_SECRET;
   const webhook = new Webhook(webhookSecret);
   let event: WebhookEvent;
 
