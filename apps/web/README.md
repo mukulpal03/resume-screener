@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/create-next-app).
+# web — ResumeAI Frontend Client
 
-## Getting Started
+This is the user-facing frontend client for ResumeAI, built on Next.js 16 (App Router) and React 19. It provides user authentication, drag-and-drop file upload capabilities, real-time job processing states via Server-Sent Events (SSE), and a detailed results dashboard.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## 🛠️ Tech Stack & Styling
+
+- **Framework**: Next.js 16 (App Router) + React 19
+- **Authentication**: `@clerk/nextjs` for Client-side page protection and identity management
+- **Forms**: `react-hook-form` + `@hookform/resolvers` (Zod integration)
+- **Animations**: `framer-motion` for responsive micro-interactions and status progress transitions
+- **Icons & Components**: `lucide-react` icons & Radix UI primitives
+- **Styling**: Tailwind CSS v4 featuring CSS-variable based fluid design systems
+
+---
+
+## 📂 Key Directory Layout
+
+```
+apps/web/
+├── app/
+│   ├── layout.tsx       # Root layout containing Clerk providers and global styles
+│   ├── page.tsx         # Marketing Landing page (Hero, features, CTA, stack overview)
+│   ├── results/
+│   │   ├── page.tsx     # Past analyses history dashboard
+│   │   └── [id]/        # Full evaluation breakdown report
+│   └── components/      # Reusable UI widgets (Layouts, file uploaders, skeleton loaders)
+├── public/              # Static assets and graphic media
+└── services/            # API client wrapper scripts for talking to @repo/api
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ⚙️ Environment and Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
+Ensure you have created and populated your local `.env` file within this directory:
 
-## Learn More
+```bash
+cp .env.example .env
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Script Executions (from this directory or via Turbo)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Run Local Next Dev Server** (on port `3001`):
+  ```bash
+  pnpm run dev
+  ```
+- **Build Next Production Artifact**:
+  ```bash
+  pnpm run build
+  ```
+- **Start Production Built Server**:
+  ```bash
+  pnpm run start
+  ```
+- **Lint Codebase**:
+  ```bash
+  pnpm run lint
+  ```
+- **Static Typecheck**:
+  ```bash
+  pnpm run check-types
+  ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## ⚡ Key Frontend Design Patterns
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. **SSE Hooks (`use-resume.ts`)**: Employs a custom client hook that opens an `EventSource` connection to the API status endpoint. It decodes JSON events (`parsing`, `llm_analysis`, `done`), updates step statuses with transition animations, and automatically cleans up sockets on unmount or component completion.
+2. **Skeleton Screen Indicators**: Utilizes customized Radix-based skeleton state screens to optimize perceived load times while results are fetched from Postgres.
+3. **Route Guards**: Next.js custom middleware guards the `/results` dashboard routing, prompting users to authenticate using Clerk integration before querying past evaluations.
