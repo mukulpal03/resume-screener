@@ -9,7 +9,7 @@ export default function HowItWorksSection() {
         <SectionHeader
           label="How it works"
           heading="Three steps to a hiring decision"
-          subtext="No setup. No configuration. No account needed."
+          subtext="Sign in, upload a resume, paste a JD — the AI does the rest."
           align="center"
           className="mb-14"
         />

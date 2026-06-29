@@ -2,6 +2,7 @@
 
 import AppButton from '../../components/common/app-button';
 import Text from '../../components/typography/text';
+import { FREE_MONTHLY_ANALYSES } from '../../constants/home';
 
 const serifStyle = { fontFamily: 'var(--font-serif)' };
 
@@ -44,7 +45,8 @@ export default function CtaSection() {
         </Text>
 
         <Text size="lg" className="text-muted-foreground font-light leading-relaxed mb-10">
-          Free forever. No sign-up needed. Upload a resume and get answers in seconds.
+          Free to use — {FREE_MONTHLY_ANALYSES} analyses per month. Sign in to run an analysis and
+          revisit your saved reports anytime.
         </Text>
 
         <div className="flex items-center justify-center gap-3 flex-wrap">

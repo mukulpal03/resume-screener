@@ -47,7 +47,7 @@ export const enqueueAnalysisHandler = asyncHandler(async (req: Request, res: Res
 
   if (usageCount >= MAX_MONTHLY_FREE) {
     throw new TooManyRequestsError(
-      `Monthly analysis quota reached (${usageCount}/${MAX_MONTHLY_FREE}). Upgrade your plan for more analyses.`
+      `Monthly analysis quota reached (${usageCount}/${MAX_MONTHLY_FREE}). Your limit resets at the start of next month.`
     );
   }
 

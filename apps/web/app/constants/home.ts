@@ -1,22 +1,45 @@
+/** Free analyses per calendar month (must match API MAX_MONTHLY_FREE). */
+export const FREE_MONTHLY_ANALYSES = 5;
+
 export const HERO_TRUST_POINTS = [
-  '✓ Free forever',
-  '✓ No sign-up required',
-  '✓ Results in under 10 seconds',
-  '✓ 100% private',
+  `✓ ${FREE_MONTHLY_ANALYSES} free analyses per month`,
+  '✓ Sign in to run analysis & save history',
+  '✓ Structured AI report with actionable tips',
+  '✓ Results saved to your account',
 ] as const;
 
 export const STATS = [
-  { num: '60', suffix: '%', label: 'Faster screening', sub: 'vs manual resume review' },
-  { num: '10', suffix: 's', label: 'Average analysis time', sub: 'From upload to full report' },
-  { num: '50', suffix: 'k+', label: 'Resumes screened', sub: 'By recruiters worldwide' },
-  { num: '4.9', suffix: '★', label: 'User rating', sub: 'Based on recruiter feedback' },
+  {
+    num: String(FREE_MONTHLY_ANALYSES),
+    suffix: '/mo',
+    label: 'Free analyses',
+    sub: 'Per signed-in account',
+  },
+  {
+    num: '3',
+    suffix: '-part',
+    label: 'Score breakdown',
+    sub: 'Skills, experience & education',
+  },
+  {
+    num: '1',
+    suffix: ' min',
+    label: 'Typical wait time',
+    sub: 'Async AI analysis via queue',
+  },
+  {
+    num: '100',
+    suffix: '/100',
+    label: 'Match score',
+    sub: 'Overall compatibility rating',
+  },
 ] as const;
 
 export const FEATURES = [
   {
     icon: '🎯',
-    title: 'Instant match score',
-    desc: 'Get a 0–100 compatibility score between any resume and JD. Semantic AI — not just keyword matching.',
+    title: 'AI match score',
+    desc: 'Get a 0–100 compatibility score between any resume and job description. Powered by semantic AI — not just keyword matching.',
     wide: true,
   },
   {
@@ -33,14 +56,14 @@ export const FEATURES = [
   },
   {
     icon: '⚡',
-    title: 'Results in seconds',
-    desc: 'Full analysis in under 10 seconds. No queues, no waiting.',
+    title: 'Live progress updates',
+    desc: 'Watch real-time status as your resume is parsed, analyzed by AI, and saved. Most runs finish in under a minute.',
     wide: false,
   },
   {
     icon: '🔒',
-    title: 'Private by default',
-    desc: 'Resumes are never stored. All processing is session-only.',
+    title: 'Saved to your account',
+    desc: 'Signed-in users can revisit past analyses anytime from their results history.',
     wide: false,
   },
 ] as const;
@@ -68,47 +91,37 @@ export const HOW_IT_WORKS_STEPS = [
   },
   {
     num: '03',
-    title: 'Get your full report',
-    desc: 'Receive match score, skill breakdown, keyword gaps, and recommendations — in seconds.',
-    tag: '⚡ Under 10 seconds',
+    title: 'Sign in & get your report',
+    desc: 'Create a free account to run the analysis. Receive match score, skill breakdown, keyword gaps, and section-specific suggestions.',
+    tag: '⚡ Usually under a minute',
     color: '#ECFDF5',
   },
 ] as const;
 
-export const TESTIMONIALS = [
+export const REPORT_HIGHLIGHTS = [
   {
-    quote:
-      'Cut our initial screening time by <strong>60%</strong>. We only interview candidates who actually match the role now.',
-    name: 'Sanya Kapoor',
-    role: 'Head of Talent · Techflow',
-    initials: 'SK',
-    color: '#059669',
+    title: 'Overall compatibility score',
+    desc: 'A 0–100 score summarizing how well the resume fits the role, with a plain-language AI summary.',
+    icon: '📊',
   },
   {
-    quote:
-      "The keyword gap analysis is incredible. I can see <strong>exactly why a candidate doesn't fit</strong> without reading the whole resume.",
-    name: 'Arjun Reddy',
-    role: 'Hiring Manager · BuildFast',
-    initials: 'AR',
-    color: '#0891B2',
+    title: 'Keyword match & gaps',
+    desc: 'See which JD keywords appear in the resume and which are missing — so you know exactly what to add.',
+    icon: '🔑',
   },
   {
-    quote:
-      'Simple, fast, no fluff. We use it for <strong>every single role</strong>. The match score gives real confidence.',
-    name: 'Priya Mehta',
-    role: 'Recruiter · Crescent',
-    initials: 'PM',
-    color: '#7C3AED',
+    title: 'Section-by-section fixes',
+    desc: 'Actionable suggestions for Summary, Experience, Skills, Projects, and Education — not generic advice.',
+    icon: '✏️',
   },
 ] as const;
 
-export const MARQUEE_LOGOS = [
-  'Google',
-  'Stripe',
-  'Airbnb',
-  'Atlassian',
-  'Notion',
-  'Linear',
-  'Vercel',
-  'Adobe',
+export const TECH_STACK = [
+  'Next.js',
+  'Express',
+  'LangChain',
+  'PostgreSQL',
+  'Redis',
+  'Clerk',
+  'TypeScript',
 ] as const;

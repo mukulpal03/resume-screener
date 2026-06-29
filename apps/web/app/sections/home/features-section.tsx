@@ -9,7 +9,7 @@ export default function FeaturesSection() {
         <SectionHeader
           label="Features"
           heading="Everything you need to hire right"
-          subtext="Built for recruiters who want signal, not noise."
+          subtext="Structured AI feedback to help you tailor a resume to any job description."
           align="center"
           className="mb-14"
         />
@@ -21,7 +21,7 @@ export default function FeaturesSection() {
               🎯
             </div>
             <Text size="lg" weight="semibold" className="text-foreground mb-2">
-              Instant match score
+              AI match score
             </Text>
             <Text size="sm" className="text-muted-foreground leading-relaxed mb-6">
               Get a 0–100 compatibility score between any resume and job description. Powered by
