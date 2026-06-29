@@ -10,6 +10,7 @@ import { jobChannel } from '../workers/analysis.worker';
 import { createRedisConnection, redisPublisher } from '../lib/redis';
 import {
   BadRequestError,
+  ForbiddenError,
   NotFoundError,
   TooManyRequestsError,
   UnauthorizedError,
@@ -58,19 +59,36 @@ export const enqueueAnalysisHandler = asyncHandler(async (req: Request, res: Res
   });
 
   const initialEvent: JobStatusEvent = { status: 'queued' };
-  await redisPublisher
-    .setex(`status:${job.id}`, 3600, JSON.stringify(initialEvent))
-    .catch((err) => console.error(`[API] redis setex failed for job ${job.id}:`, err));
+  await Promise.all([
+    redisPublisher.setex(`status:${job.id}`, 3600, JSON.stringify(initialEvent)),
+    redisPublisher.setex(`job-user:${job.id}`, 3600, String(user.id)),
+  ]).catch((err) => console.error(`[API] redis setex failed for job ${job.id}:`, err));
 
   return res.status(202).json({ success: true, jobId: job.id });
 });
 
 export const streamJobStatus = asyncHandler(async (req: Request, res: Response) => {
-  const { userId: clerkId } = getAuth(req);
-  if (!clerkId) throw new UnauthorizedError();
+  const user = await resolveAuthedUser(req);
 
   const jobId = req.params['jobId'] as string;
   if (!jobId) throw new BadRequestError('Missing jobId');
+
+  // Verify ownership of the job
+  let isOwner = false;
+  const cachedUserId = await redisPublisher.get(`job-user:${jobId}`).catch(() => null);
+  if (cachedUserId) {
+    isOwner = Number(cachedUserId) === user.id;
+  } else {
+    // Fallback: check BullMQ queue
+    const job = await analysisQueue.getJob(jobId);
+    if (job) {
+      isOwner = job.data?.userId === user.id;
+    }
+  }
+
+  if (!isOwner) {
+    throw new ForbiddenError('You do not have permission to access this job status');
+  }
 
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
