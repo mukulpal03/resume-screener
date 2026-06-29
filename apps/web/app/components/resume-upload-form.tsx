@@ -9,6 +9,7 @@ import type { FormValues } from '@repo/types';
 import { useResume } from '../hooks/use-resume';
 import { AnalysisOverlay } from './analysis-overlay';
 import { validateResumeFlow } from '../lib/resume-validation';
+import { FREE_MONTHLY_ANALYSES } from '../constants/home';
 import { toast } from 'sonner';
 
 export default function ResumeUploadForm() {
@@ -58,7 +59,8 @@ export default function ResumeUploadForm() {
             {loading ? 'Analyzing...' : 'Analyze Resume →'}
           </AppButton>
           <Text size="xs" className="text-muted-foreground">
-            Your resume is never stored — 100% private
+            Sign in required · {FREE_MONTHLY_ANALYSES} free analyses per month · Results saved to
+            your account
           </Text>
         </div>
       </form>

@@ -1,16 +1,19 @@
 import Text from '../../components/typography/text';
-import { MARQUEE_LOGOS } from '../../constants/home';
+import { TECH_STACK } from '../../constants/home';
 
 export default function MarqueeSection() {
-  const doubled = [...MARQUEE_LOGOS, ...MARQUEE_LOGOS];
+  const doubled = [...TECH_STACK, ...TECH_STACK];
   return (
-    <div className="overflow-hidden border-t border-b border-border bg-[#F5FAF7] py-7">
+    <div
+      id="tech-stack"
+      className="overflow-hidden border-t border-b border-border bg-[#F5FAF7] py-7"
+    >
       <Text
         size="xs"
         weight="medium"
         className="text-center tracking-[0.1em] uppercase text-muted-foreground mb-5"
       >
-        Trusted by hiring teams at
+        Built with
       </Text>
       <div className="flex gap-14 w-max" style={{ animation: 'marquee 22s linear infinite' }}>
         {doubled.map((name, i) => (

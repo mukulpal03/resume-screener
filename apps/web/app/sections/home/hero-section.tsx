@@ -31,7 +31,7 @@ export default function HeroSection() {
             className="gap-2 px-4 rounded-full text-xs font-medium normal-case tracking-normal"
           >
             <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse inline-block" />
-            AI-powered resume screening — results in seconds
+            AI-powered resume screening — structured compatibility reports
           </Badge>
         </div>
 
@@ -60,8 +60,8 @@ export default function HeroSection() {
             size="sm"
             className="text-muted-foreground max-w-[520px] mx-auto leading-relaxed font-light"
           >
-            Upload any resume, paste the job description — get an instant AI compatibility score,
-            skill gaps, and keyword report in seconds.
+            Upload a resume and job description, sign in to analyze, and get a detailed AI
+            compatibility score with skill gaps, keywords, and improvement suggestions.
           </Text>
         </div>
 

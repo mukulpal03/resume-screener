@@ -9,7 +9,7 @@ export default function StatsSection() {
       <div className="mx-auto max-w-6xl px-6">
         <div className="grid grid-cols-2 md:grid-cols-4 divide-x divide-border">
           {STATS.map((s) => (
-            <div key={s.num} className="px-8 py-10 flex flex-col gap-1">
+            <div key={s.label} className="px-8 py-10 flex flex-col gap-1">
               <Text
                 as="div"
                 size="5xl"

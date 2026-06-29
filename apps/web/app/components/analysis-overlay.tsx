@@ -111,7 +111,7 @@ export function AnalysisOverlay({ loading, stepIndex }: AnalysisOverlayProps) {
               Analyzing Your Resume
             </Text>
             <Text size="sm" className="text-muted-foreground">
-              This usually takes under 10 seconds
+              AI analysis usually takes 15–45 seconds
             </Text>
           </div>
 
