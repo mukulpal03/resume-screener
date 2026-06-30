@@ -1,50 +1,18 @@
-FROM node:20-alpine AS base
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
+FROM node:22-alpine AS base
+RUN npm install -g pnpm
 
-# ---- prune stage ----
-FROM base AS pruner
 WORKDIR /app
-RUN pnpm add -g turbo@2
+
+# Copy all files from the workspace
 COPY . .
-RUN turbo prune @repo/api --docker
 
-# ---- install + build stage ----
-FROM base AS builder
-WORKDIR /app
-
-# Copy pruned manifests and lockfile, then install
-COPY --from=pruner /app/out/json/ .
-COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
+# Install all dependencies (including devDependencies required for compile)
 RUN pnpm install --frozen-lockfile
 
-# Copy full pruned source on top (node_modules already present)
-COPY --from=pruner /app/out/full/ .
+# Build only the backend API
+RUN pnpm build --filter=@repo/api
 
-RUN pnpm --filter @repo/db db:generate || true
-RUN pnpm --filter @repo/api build && echo "=== dist contents ===" && ls -la apps/api/dist/ || echo "=== dist is EMPTY or missing ==="
+EXPOSE 3000
 
-# ---- production stage ----
-FROM node:20-alpine AS runner
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-RUN corepack enable && corepack prepare pnpm@9.0.0 --activate
-WORKDIR /app
-
-ENV NODE_ENV=production
-
-COPY --from=builder /app/apps/api/dist ./apps/api/dist
-COPY --from=builder /app/apps/api/package.json ./apps/api/package.json
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/api/node_modules ./apps/api/node_modules 
-COPY --from=builder /app/packages ./packages
-COPY --from=builder /app/package.json ./package.json
-
-WORKDIR /app/apps/api
-
-EXPOSE 8080
-
-RUN find /app -name "server.js" 2>/dev/null || echo "server.js NOT FOUND ANYWHERE"
-
-CMD ["npm", "run", "start"]
+# Run migrations and start the server
+CMD ["sh", "-c", "pnpm --filter @repo/db db:migrate && pnpm --filter @repo/api start"]
