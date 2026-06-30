@@ -53,6 +53,7 @@ async function saveResult(
         missingKeywords: validated.missing_keywords,
         suggestions: validated.suggestions as Suggestion[],
         summary: validated.summary,
+        isValid: validated.is_valid,
       })
       .returning();
 

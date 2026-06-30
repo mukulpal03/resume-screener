@@ -17,6 +17,7 @@ export interface ResumeSuggestion {
 }
 
 export interface ResumeResult {
+  is_valid: boolean;
   job_title: string;
   candidate_name: string;
   overall_score: number;
@@ -51,6 +52,7 @@ export interface HistoryItem {
   missingKeywords: string[];
   suggestions: ResumeSuggestion[];
   summary: string;
+  isValid: boolean;
   createdAt: string;
 }
 

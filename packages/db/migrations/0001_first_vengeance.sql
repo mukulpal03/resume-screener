@@ -1,0 +1,1 @@
+ALTER TABLE "results" ADD COLUMN "is_valid" boolean DEFAULT true NOT NULL;

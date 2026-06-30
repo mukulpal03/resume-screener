@@ -16,6 +16,7 @@ export async function fetchResultsHistoryForUser(userId: number) {
         missingKeywords: resultsTable.missingKeywords,
         suggestions: resultsTable.suggestions,
         summary: resultsTable.summary,
+        isValid: resultsTable.isValid,
         createdAt: resultsTable.createdAt,
       })
       .from(resultsTable)
@@ -44,6 +45,7 @@ export async function fetchResultByIdForUser(userId: number, resultId: number) {
         missingKeywords: resultsTable.missingKeywords,
         suggestions: resultsTable.suggestions,
         summary: resultsTable.summary,
+        isValid: resultsTable.isValid,
         createdAt: resultsTable.createdAt,
       })
       .from(resultsTable)
