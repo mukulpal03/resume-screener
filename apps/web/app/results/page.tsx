@@ -47,54 +47,73 @@ function formatDate(dateStr: string): string {
 }
 
 function HistoryCard({ item, onClick }: { item: HistoryItem; onClick: () => void }) {
+  const isInvalid = item.isValid === false;
+
   return (
     <div
       onClick={onClick}
-      className="group flex items-center gap-5 bg-white border border-border rounded-2xl p-5 cursor-pointer hover:border-primary/30 hover:shadow-[0_4px_20px_rgba(5,150,105,0.08)] transition-all duration-200"
+      className={`group flex items-center gap-5 bg-white border border-border rounded-2xl p-5 cursor-pointer hover:shadow-[0_4px_20px_rgba(5,150,105,0.08)] transition-all duration-200 ${isInvalid ? 'hover:border-amber-500/30' : 'hover:border-primary/30'}`}
     >
       {/* Score circle */}
-      <div
-        className={`flex-shrink-0 w-[60px] h-[60px] rounded-full border-2 flex flex-col items-center justify-center ${getScoreBorder(item.overallScore)} ${getScoreBg(item.overallScore)}`}
-      >
-        <Text
-          size="xl"
-          weight="bold"
-          className={`leading-none ${getScoreColor(item.overallScore)}`}
+      {isInvalid ? (
+        <div className="flex-shrink-0 w-[60px] h-[60px] rounded-full border-2 border-amber-400 bg-amber-50 flex items-center justify-center text-amber-500 text-2xl">
+          ⚠️
+        </div>
+      ) : (
+        <div
+          className={`flex-shrink-0 w-[60px] h-[60px] rounded-full border-2 flex flex-col items-center justify-center ${getScoreBorder(item.overallScore)} ${getScoreBg(item.overallScore)}`}
         >
-          {item.overallScore}
-        </Text>
-        <Text size="xs" className="text-muted-foreground leading-none mt-0.5">
-          /100
-        </Text>
-      </div>
+          <Text
+            size="xl"
+            weight="bold"
+            className={`leading-none ${getScoreColor(item.overallScore)}`}
+          >
+            {item.overallScore}
+          </Text>
+          <Text size="xs" className="text-muted-foreground leading-none mt-0.5">
+            /100
+          </Text>
+        </div>
+      )}
 
       {/* Main info */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
           <Text size="base" weight="semibold" className="text-foreground truncate">
-            {item?.jobTitle}
+            {isInvalid ? 'Analysis Incomplete' : item?.jobTitle}
           </Text>
         </div>
         <Text size="sm" className="text-muted-foreground truncate">
-          {item?.candidateName}
+          {isInvalid ? item?.summary : item?.candidateName}
         </Text>
 
         {/* Score breakdown chips */}
-        <div className="flex items-center gap-2 mt-2.5 flex-wrap">
-          <span className="inline-flex items-center gap-1 text-xs bg-[#ECFDF5] text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-lg">
-            Skills {item?.skillsMatchScore}%
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-1 rounded-lg">
-            Experience {item?.experienceRelevanceScore}%
-          </span>
-          <span className="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 border border-purple-100 px-2.5 py-1 rounded-lg">
-            Education {item?.educationScore}%
-          </span>
-          {/* Keyword count */}
-          <span className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-lg">
-            {item?.matchedKeywords?.length} keywords matched
-          </span>
-        </div>
+        {isInvalid ? (
+          <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-xs bg-amber-50 text-amber-700 border border-amber-100 px-2.5 py-1 rounded-lg font-medium">
+              ⚠️ Invalid Input
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-lg">
+              Overall Score: 0
+            </span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 mt-2.5 flex-wrap">
+            <span className="inline-flex items-center gap-1 text-xs bg-[#ECFDF5] text-emerald-700 border border-emerald-100 px-2.5 py-1 rounded-lg">
+              Skills {item?.skillsMatchScore}%
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs bg-blue-50 text-blue-700 border border-blue-100 px-2.5 py-1 rounded-lg">
+              Experience {item?.experienceRelevanceScore}%
+            </span>
+            <span className="inline-flex items-center gap-1 text-xs bg-purple-50 text-purple-700 border border-purple-100 px-2.5 py-1 rounded-lg">
+              Education {item?.educationScore}%
+            </span>
+            {/* Keyword count */}
+            <span className="inline-flex items-center gap-1 text-xs bg-muted text-muted-foreground px-2.5 py-1 rounded-lg">
+              {item?.matchedKeywords?.length} keywords matched
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Date + Arrow */}
@@ -210,10 +229,17 @@ export default function HistoryPage() {
             <Text size="sm" className="text-muted-foreground">
               Avg score:{' '}
               <span className="font-semibold text-foreground">
-                {Math.round(
-                  (data?.history ?? []).reduce((acc, item) => acc + item.overallScore, 0) /
-                    (data?.history ?? []).length
-                )}
+                {(() => {
+                  const validHistory = (data?.history ?? []).filter(
+                    (item) => item.isValid !== false
+                  );
+                  return validHistory.length > 0
+                    ? Math.round(
+                        validHistory.reduce((acc, item) => acc + item.overallScore, 0) /
+                          validHistory.length
+                      )
+                    : 0;
+                })()}
               </span>
             </Text>
           </div>

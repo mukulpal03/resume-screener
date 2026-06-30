@@ -1,4 +1,4 @@
-import { integer, pgTable, timestamp, varchar, jsonb, text } from 'drizzle-orm/pg-core';
+import { integer, pgTable, timestamp, varchar, jsonb, text, boolean } from 'drizzle-orm/pg-core';
 
 export interface Suggestion {
   section: 'Summary' | 'Experience' | 'Skills' | 'Projects' | 'Education';
@@ -38,5 +38,6 @@ export const resultsTable = pgTable('results', {
   suggestions: jsonb('suggestions').$type<Suggestion[]>(),
 
   summary: text('summary').notNull(),
+  isValid: boolean('is_valid').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow(),
 });

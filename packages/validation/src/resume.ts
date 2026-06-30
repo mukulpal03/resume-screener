@@ -16,6 +16,7 @@ export const analyzeResumeSchema = z.object({
 export type AnalyzeResumeInput = z.infer<typeof analyzeResumeSchema>;
 
 export const llmOutputSchema = z.object({
+  is_valid: z.boolean(),
   job_title: z.string().min(1, 'Job title is required'),
   candidate_name: z.string().min(1, 'Candidate name is required'),
   overall_score: z.number().min(0).max(100),
