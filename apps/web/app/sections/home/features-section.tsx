@@ -14,9 +14,9 @@ export default function FeaturesSection() {
           className="mb-14"
         />
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Wide card */}
-          <div className="col-span-2 bg-white border border-border rounded-2xl p-8 hover:-translate-y-0.5 transition-all duration-200 shadow-sm">
+          <div className="col-span-1 md:col-span-2 bg-white border border-border rounded-2xl p-6 md:p-8 hover:-translate-y-0.5 transition-all duration-200 shadow-sm">
             <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] flex items-center justify-center text-lg mb-5">
               🎯
             </div>
@@ -29,8 +29,8 @@ export default function FeaturesSection() {
             </Text>
 
             {/* Mini score preview */}
-            <div className="bg-[#F5FAF7] border border-border rounded-xl p-4 flex items-center gap-5">
-              <div className="w-14 h-14 rounded-full border-[3px] border-primary flex flex-col items-center justify-center flex-shrink-0">
+            <div className="bg-[#F5FAF7] border border-border rounded-xl p-4 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
+              <div className="w-14 h-14 rounded-full border-[3px] border-primary flex flex-col items-center justify-center flex-shrink-0 mx-auto sm:mx-0">
                 <Text size="xl" weight="bold" className="text-foreground leading-none">
                   82
                 </Text>
@@ -63,7 +63,7 @@ export default function FeaturesSection() {
           {FEATURES.filter((f) => !f.wide).map((f) => (
             <div
               key={f.title}
-              className="bg-white border border-border rounded-2xl p-7 hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
+              className="bg-white border border-border rounded-2xl p-6 md:p-7 hover:-translate-y-0.5 transition-all duration-200 shadow-sm"
             >
               <div className="w-10 h-10 rounded-xl bg-[#ECFDF5] flex items-center justify-center text-lg mb-5">
                 {f.icon}

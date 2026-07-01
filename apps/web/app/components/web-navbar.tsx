@@ -28,6 +28,14 @@ export default function WebNavbar({ links = [] }: NavbarProps) {
               {link.label}
             </Link>
           ))}
+          {isSignedIn && (
+            <Link
+              href="/results"
+              className="text-[13.5px] text-muted-foreground hover:text-foreground transition-colors duration-150 no-underline"
+            >
+              My Results
+            </Link>
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -40,7 +48,17 @@ export default function WebNavbar({ links = [] }: NavbarProps) {
             </Link>
           )}
 
-          {isSignedIn && <UserButton />}
+          {isSignedIn && (
+            <div className="flex items-center gap-4">
+              <Link
+                href="/results"
+                className="text-[13.5px] font-medium text-primary hover:text-primary/80 transition-colors duration-150 px-3 py-1.5 no-underline"
+              >
+                My Results
+              </Link>
+              <UserButton />
+            </div>
+          )}
         </div>
       </div>
     </header>
