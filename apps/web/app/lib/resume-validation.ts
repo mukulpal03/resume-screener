@@ -5,7 +5,7 @@ const clientSchema = z.object({
     .custom<File>((val) => val instanceof File, {
       message: 'Please upload your resume',
     })
-    .refine((file) => file.size <= 5 * 1024 * 1024, {
+    .refine((file) => !(file instanceof File) || file.size <= 5 * 1024 * 1024, {
       message: 'Resume file size must be at most 5MB',
     }),
   jobDescription: analyzeResumeSchema.shape.jobDescription,
