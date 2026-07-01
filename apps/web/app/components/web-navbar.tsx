@@ -52,7 +52,7 @@ export default function WebNavbar({ links = [] }: NavbarProps) {
             <div className="flex items-center gap-4">
               <Link
                 href="/results"
-                className="text-[13.5px] font-medium text-primary hover:text-primary/80 transition-colors duration-150 px-3 py-1.5 no-underline"
+                className="text-[13.5px] font-medium text-primary hover:text-primary/80 transition-colors duration-150 px-3 py-1.5 no-underline md:hidden"
               >
                 My Results
               </Link>
