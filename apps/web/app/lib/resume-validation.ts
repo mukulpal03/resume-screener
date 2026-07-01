@@ -1,9 +1,13 @@
 import { analyzeResumeSchema, z } from '@repo/validation';
 
 const clientSchema = z.object({
-  resume: z.custom<File>((val) => val instanceof File, {
-    message: 'Please upload your resume',
-  }),
+  resume: z
+    .custom<File>((val) => val instanceof File, {
+      message: 'Please upload your resume',
+    })
+    .refine((file) => file.size <= 5 * 1024 * 1024, {
+      message: 'Resume file size must be at most 5MB',
+    }),
   jobDescription: analyzeResumeSchema.shape.jobDescription,
 });
 
