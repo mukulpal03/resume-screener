@@ -40,6 +40,9 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: 'Resume Screener',
   description: 'AI Resume Analyzer',
+  icons: {
+    icon: '/resume.webp',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
